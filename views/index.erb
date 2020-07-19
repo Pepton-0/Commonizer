@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Commonizer</title>
+	<script src="index.js"></script>
+  <link rel="shortcut icon" ref="/favicon.ico">
+</head>
+<body>
+	<p>Commonizer</p>
+
+	<button id="shareButton">Share Screen</button><br/>
+	<video id="myscreen" width="500" height="240" autoplay></video>
+
+	<div>
+		<form action="send" method="post">
+		  送信側
+			<input type="submit">
+		</form>
+		<form action="receive" method="post">
+		  受信側
+			<input type="submit">
+		</form>
+	</div>
+</body>
+</html>
