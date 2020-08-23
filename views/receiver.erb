@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="receiver.js"></script>
-  <script src="webrtc.js"></script>
+  <script src="receiver.js" type="module"></script>
+  <script src="webrtc.js" type="module"></script>
   <link rel="shortcut icon" ref="/favicon.ico">
   <title>Receiver</title>
 </head>
@@ -16,6 +16,7 @@
       <input type="submit" placeholder="参加">
     </form>
   </div>
+     <video id="myscreen" width="530" height="300" autoplay playsinline muted loop></video>
     <video id="receivedScreen" width="530" height="300" autoplay playsinline muted loop></video>
   </div>
   <p>SDP to send:<br />

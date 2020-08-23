@@ -19,10 +19,11 @@ function prepareConnection(isOffer) {
 	};
   const peer = new RTCPeerConnection(pc_config);
 
+  // receiver用か? "myscreen"のところを変える必要がある
   peer.ontrack = evt => {
     console.log("-- peer.ontrack()");
     // playVideo(evt.streams[0]);
-    document.getElementById("myscreen").srcStream = evt.streams[0];
+    document.getElementById("receivedScreen").srcStream = evt.streams[0];
   };
 
   // ICE Candidateを収集した時の処理
@@ -39,7 +40,10 @@ function prepareConnection(isOffer) {
   // ローカルの動画ストリームをpeerに登録
   if (localStream) {
     console.log("Adding local stream...");
-    localStream.getTracks().forEach(track => peer.addTrack(track));
+    localStream.getTracks().forEach(track => {
+      console.log("Add a new track");
+      peer.addTrack(track);
+    });
   }
   else {
     console.warn("No local stream, but continue.");
@@ -65,7 +69,7 @@ function prepareConnection(isOffer) {
   return peer;
 }
 
-// 手動シグナリングのための処理を追加する
+// 手動シグナリングのためのデータをWebページに表示
 function sendSdp(description) {
   console.log("--Sending sdp--");
   const textForSendSdp = document.getElementById("text_for_send_sdp");
