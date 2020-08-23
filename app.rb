@@ -16,7 +16,8 @@ require './models.rb'
 # end
 
 get '/' do
-  erb :index
+  # erb :index
+  erb :sample
 end
 
 post '/send' do
