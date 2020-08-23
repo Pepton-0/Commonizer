@@ -8,7 +8,7 @@ let negotiationneededCounter = 0;
 let isOffer = false;
 
 // シグナリングサーバへ接続する
-const wsUrl = "wss://commonizer0signaling.herokuapp.com/";
+const wsUrl = "ws://commonizer0signaling.herokuapp.com/";
 const ws = new WebSocket(wsUrl);
 ws.onopen = (evt) => {
   console.log("ws open()");
