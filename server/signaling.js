@@ -1,14 +1,8 @@
 "use strict";
 
 const WebSocketServer = require("ws").Server; // Is this a class?
-const port = 3457;
+const port = process.env.PORT || 3457;
 const wsServer = new WebSocketServer({ port: port });
-
-const a = {
-	port: "3306",
-	name: "test",
-};
-console.log(a.port);
 
 wsServer.on("connection", function (ws) {
 	console.log("--websocket connected--");
@@ -27,4 +21,4 @@ function isSame(ws1, ws2) {
 	return ws1 == ws2;
 }
 
-console.log("websocket server start. port=", +port);
+console.log("websocket server start. port=" + port);
