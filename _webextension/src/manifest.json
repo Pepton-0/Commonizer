@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Commonizer",
+  "version": "1.0",
+
+  "description": "A native function caller from commonizer site to computer.",
+  "icons":{
+    "16": "favicon.ico"
+  },
+  "content_scripts":[
+    {
+      "matches": ["*://commonizer.herokuapp.com/*", "*://localhost/*"],
+      "js": ["extension.js"]
+    }
+  ],
+  "background":{
+    "scripts": ["background.js"]
+  }
+}
