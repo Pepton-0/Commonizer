@@ -28,6 +28,3 @@ end
 post '/receive' do
   erb :receiver
 end
-
-post '/joinroom' do
-end

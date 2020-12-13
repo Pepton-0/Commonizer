@@ -2,9 +2,9 @@ let pipWindow;
 const videoSource = document.getElementById("local_video");
 const toggleButton = document.getElementById("pipToggle");
 
-// TODO 現在、PIPがFirefoxでしか動作しない。(disabledとかがFirefoxにしか無いため)
+// TODO 現在、pipdesignerがFirefoxでしか動作しない。(disabledとかがFirefoxにしか無いため)
 window.onload = function () {
-	console.log("startup");
+	console.log("Setup pipdesigner");
 	/* Feature support */
 	toggleButton.addEventListener("click", async function (event) {
 		console.log("Toggling Picture-in-Picture");

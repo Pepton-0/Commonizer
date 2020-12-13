@@ -1,0 +1,7 @@
+Localでのテスト方法
+
+0. sample.jsで、wsURLを変更
+1. signalingサーバーの起動 (node signaling.js)
+2. Dockerサーバーの起動(「ターミナルを開く」)
+3. ruby app.rb -o 0.0.0.0
+4. ssl-proxyの起動(正直いつ起動してもいい, 現在うまく動かない)
