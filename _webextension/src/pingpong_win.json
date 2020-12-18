@@ -1,0 +1,8 @@
+{
+    "name": "pingpong",
+    "description": "Native Test",
+    "path": "C:\\Users\\kent2\\Downloads\\native_test-main\\test.bat",
+    "type": "stdio",
+    "allowed_extensions": [ "Commonizer" ],
+    "allowed_origins": ["chrome-extension://dpopmhdfcfidmdngaagfegmkmcbjjkff"]
+}

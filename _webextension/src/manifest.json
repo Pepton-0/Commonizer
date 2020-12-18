@@ -12,6 +12,7 @@
   "background":{
     "scripts": ["background.js"]
   },
+  "permissions": ["nativeMessaging", "tabs","*://commonizer.herokuapp.com/*", "*://localhost/*"],
   "content_scripts":[
     {
       "matches": ["*://commonizer.herokuapp.com/*", "*://localhost/*"],

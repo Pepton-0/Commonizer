@@ -1,7 +1,0 @@
-{
-  "name": "cmdrequest",
-  "description": "Cmd executer",
-  "path": "C:\\Users\\kent2\\Desktop\\MyProgram\\Docker\\commonizer\\_webextension\\src\\nativemessages\\cmd.bat",
-  "type": "stdio",
-  "allowed_origins": ["chrome-extension://dpopmhdfcfidmdngaagfegmkmcbjjkff"]
-}
