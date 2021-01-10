@@ -1,0 +1,15 @@
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\CommonizerRuler.exe
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\CommonizerRuler.deps.json
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\CommonizerRuler.runtimeconfig.json
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\CommonizerRuler.runtimeconfig.dev.json
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\CommonizerRuler.dll
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\CommonizerRuler.pdb
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.csprojAssemblyReference.cache
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.AssemblyInfoInputs.cache
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.AssemblyInfo.cs
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.csproj.CoreCompileInputs.cache
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.dll
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.pdb
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.genruntimeconfig.cache
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.csproj.CopyComplete

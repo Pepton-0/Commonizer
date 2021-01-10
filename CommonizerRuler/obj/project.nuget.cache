@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "hwlYEmOrLHUHOnaAYZzSY2PweZ5YoI9KLOZ/xUZAHl7ZEQXbKGxgjx7PGSSvi3UGrX16y1RjfMcxIM2SnjLEVA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kent2\\Desktop\\MyProgram\\Docker\\commonizer\\CommonizerRuler\\CommonizerRuler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kent2\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
