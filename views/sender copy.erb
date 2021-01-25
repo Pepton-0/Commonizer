@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+      // 同義：var senderId = OOOOOO
+      window.senderId = <%= @room_id %>;
+    </script>
+    <script src="sender.js" type="module"></script>
+    <script src="webrtc.js" type="module"></script>
+    <link rel="shortcut icon" ref="/favicon.ico">
+    <title>Commonizer (Sender)</title>
+  </head>
+  <body>
+    <p>Sender</p>
+    <p>Sender ID: <%= @room_id %></p>
+    <div>
+     <video id="myscreen" width="530" height="300" autoplay playsinline muted loop></video>
+     <video id="receivedScreen" width="530" height="300" autoplay playsinline muted loop></video> <!--A test tag-->
+    </div>
+    <p>SDP to send:<br />
+      <textarea id="text_for_send_sdp" rows="5" cols="60" readonly="readonly">SDP to send</textarea>
+    </p>
+    <p>SDP to receive:
+      <button type="button" id="receiveButton">Receive remote SDP</button><br />
+      <textarea id="text_for_receive_sdp" rows="5" cols="60"></textarea>
+    </p>
+    <button type="button" id="connectButton">Connect</button>
+  </body>
+</html>

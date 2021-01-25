@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/owner.js" type="module"></script>
+  <link rel="shortcut icon" ref="/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="css/design.css">
+  <title>Commonizer (Owner)</title>
+
+  <script>
+     // 同義：var room_id = OOOOOO
+     window.roomId = <%= @room_id %>;
+   </script>
+</head>
+<body>
+  <header>
+    <font size="64">OWNER</font>
+  </header>
+  <br>
+  <div class="inputarea">
+    <div><font size="32">id=<%=@room_id%></font></div>
+      <font size="32">STATUS=</font>
+      <font color="green" size="32" id="status">NONE</font>
+    </div>
+    <div>
+      <font size="16">DEBUG SCREEN</font>
+      <video id="debugScreen" width="284" height="160" class="screen" autoplay playsinline muted loop></video>
+    </div>
+    <div>
+      <button><font size="32">Exit</font></button>
+    </div>
+  </div>
+</body>
+</html>

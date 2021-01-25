@@ -1,20 +1,57 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "ターミナルを開く",
-      "type": "shell",
-      "command": "dk attach"
-    },
-    {
-      "label": "ブラウザを開く",
-      "type": "shell",
-      "command": "dk open"
-    },
-    {
-      "label": "リセット",
-      "type": "shell",
-      "command": "dk reset"
-    }
-  ]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/CommonizerRuler/CommonizerRuler.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/CommonizerRuler/CommonizerRuler.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/CommonizerRuler/CommonizerRuler.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "ターミナルを開く",
+            "type": "shell",
+            "command": "dk attach"
+        },
+        {
+            "label": "ブラウザを開く",
+            "type": "shell",
+            "command": "dk open"
+        },
+        {
+            "label": "リセット",
+            "type": "shell",
+            "command": "dk reset"
+        }
+    ]
 }

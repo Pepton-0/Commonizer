@@ -6,7 +6,7 @@ const wsServer = new WebSocketServer({ port: port });
 
 wsServer.on("connection", function (ws) {
 	console.log("--websocket connected--");
-	ws.on("message", function (message) {
+	ws.on("message", function (message) { // TODO ここのmessageをJSONにして、roomIdを取得する
 		wsServer.clients.forEach(function each(client) {
 			if (isSame(ws, client)) {
 				console.log("-skip sender-");

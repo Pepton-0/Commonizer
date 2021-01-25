@@ -20,11 +20,20 @@ get '/' do
   erb :sample
 end
 
-post '/send' do
-  @sender_id = rand
-  erb :sender
+get '/chooser' do
+  erb :chooser
 end
 
-post '/receive' do
-  erb :receiver
+get '/error' do
+  erb :error
+end
+
+post '/make' do
+  @room_id = rand
+  erb :owner
+end
+
+post '/join' do
+  @room_id = params[:text]
+  erb :sender
 end
