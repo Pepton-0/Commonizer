@@ -15,7 +15,7 @@ gem 'sinatra'
 gem 'sinatra-activerecord'
 gem 'sinatra-contrib'
 
-gem 'solargraph', group: :development
+gem 'solargraph', '0.40.0', group: :development
 gem 'sqlite3', '1.4.1', group: :development
 
 group :production do

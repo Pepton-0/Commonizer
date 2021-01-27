@@ -10,7 +10,7 @@
 
   <script>
      // 同義：var room_id = OOOOOO
-     window.roomId = <%= @room_id %>;
+     window.roomId = "<%=@room_id%>";
    </script>
 </head>
 <body>
@@ -30,6 +30,7 @@
     <div>
       <button><font size="32">Exit</font></button>
     </div>
+    <button id="testButton">TEST</button>
   </div>
 </body>
 </html>

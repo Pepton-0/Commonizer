@@ -5,6 +5,7 @@ Bundler.require
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require './models.rb'
+require 'securerandom'
 
 # if development?
 #   require 'webrick/https'
@@ -29,7 +30,7 @@ get '/error' do
 end
 
 post '/make' do
-  @room_id = rand
+  @room_id = SecureRandom.hex(10)
   erb :owner
 end
 
