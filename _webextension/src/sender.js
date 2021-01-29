@@ -1,65 +1,62 @@
-// TODO 無理やりなコード終了コマンド. これ使っていいのかな？
-if (window.location.pathname.indexOf("/join") != 0) {
-	throw new Error("The curren page is not for the sender. sender.js quits.");
-}
-
 console.log("Load sender.js script");
 
-const roomId = window.roomId;
-const side = "sender";
-const screenElement = document.getElementById("screen");
-let webutil = null;
-let ws = null;
-let peerConnection = null;
-let mousePosChannel = null; // RTCDataChannel for mouse position
+let screenElement = null;
 
-window.onload = async function () {
-	const webutilLoader = async () => {
-		const src = chrome.runtime.getURL("webutil.js");
-		webutil = await import(src);
-		ws = webutil.prepareWebSocket(side);
-		ws.onopen = (e) => {
-			webutil.sendWsMessage(ws, roomId, side, "registry");
+if (window.location.pathname.indexOf("/join") == 0) {
+	window.onload = async function () {
+		side = "sender";
+		screenElement = document.getElementById("screen");
+		roomId = window.roomId;
+		const webutilLoader = async () => {
+			const src = chrome.runtime.getURL("webutil.js");
+			webutil = await import(src);
+			ws = webutil.prepareWebSocket(side);
+			ws.onopen = (e) => {
+				webutil.sendWsMessage(ws, roomId, side, "registry");
+			};
+			ws.onmessage = (e) => {
+				console.log("(owner) ws onmessage() data:" + e.data.substr(0, 25) + "...");
+				const message = JSON.parse(e.data);
+				switch (message.type) {
+					case "offer": {
+						console.log("(" + side + ") Received offer ...");
+						setOffer(message);
+						break;
+					}
+					case "candidate": {
+						console.log("Received ICE candidate ...");
+						const candidate = new RTCIceCandidate(message.ice);
+						console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
+						addIceCandidate(candidate);
+						break;
+					}
+					case "close": {
+						console.log("peer is closed ...");
+						hangUp();
+						break;
+					}
+					case "ping": {
+						console.log("pong!");
+						const message = JSON.stringify({ type: "pong" });
+						webutil.sendWsMessage(ws, roomId, side, message);
+						break;
+					}
+					default: {
+						console.log("Invalid message: " + message.type);
+						break;
+					}
+				}
+			};
 		};
-		ws.onmessage = (e) => {
-			console.log("(owner) ws onmessage() data:" + e.data.substr(0, 25) + "...");
-			const message = JSON.parse(e.data);
-			switch (message.type) {
-				case "offer": {
-					console.log("(" + side + ") Received offer ...");
-					setOffer(message);
-					break;
-				}
-				case "candidate": {
-					console.log("Received ICE candidate ...");
-					const candidate = new RTCIceCandidate(message.ice);
-					console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
-					addIceCandidate(candidate);
-					break;
-				}
-				case "close": {
-					console.log("peer is closed ...");
-					hangUp();
-					break;
-				}
-				case "ping": {
-					console.log("pong!");
-					const message = JSON.stringify({ type: "pong" });
-					webutil.sendWsMessage(ws, roomId, side, message);
-					break;
-				}
-				default: {
-					console.log("Invalid message: " + message.type);
-					break;
-				}
-			}
-		};
+		await webutilLoader();
+		activate();
 	};
-	await webutilLoader();
-	setup();
-};
+}
+else {
+	console.warn("The curren page is not for the sender.");
+}
 
-function setup() {
+function activate() {
 	console.log("sender.js has activated.\nThe room id is: " + window.roomId);
 
 	screenElement.addEventListener("mousedown", (e) => { console.log("mouse: down @" + e.clientX + ":" + e.clientY);

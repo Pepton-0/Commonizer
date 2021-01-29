@@ -1,74 +1,75 @@
 // TODO 1. SetCursorPos, GetCursorPosを高DPIに対応させること.
 // TODO 2. screenElementでの割合計算が上手くいっていないので修正すること
 
-// TODO 無理やりなコード終了コマンド. これ使っていいのかな？
-if (window.location.pathname.indexOf("/make") != 0) {
-	throw new Error("The curren page is not for the owner. owner.js quits.");
-}
+// TODO なんでroomIdがundefinedなんだ？
+// TODO どうして、sender.jsも起動しちゃうんだ？(content_scriptsにsender.jsも入れた場合)
 
 console.log("Load owner.js script");
 
-const roomId = window.roomId;
-const side = "owner";
-let webutil = null;
-let ws = null;
 let localStream = null;
-let peerConnection = null;
-let mousePosChannel = null;
 let negotiationneededCounter = 0;
 
-window.onload = async function () {
-	const webutilLoader = async () => {
-		const src = chrome.runtime.getURL("webutil.js");
-		webutil = await import(src);
-		ws = webutil.prepareWebSocket(side);
-		ws.onopen = (e) => {
-			webutil.sendWsMessage(ws, roomId, side, "registry");
+if (window.location.pathname.indexOf("/make") == 0) {
+	window.onload = async function () {
+		console.log("activate owner.js");
+		side = "owner";
+		roomId = window.roomId;
+		console.log(window.roomId);
+		const webutilLoader = async () => {
+			const src = chrome.runtime.getURL("webutil.js");
+			webutil = await import(src);
+			ws = webutil.prepareWebSocket(side);
+			ws.onopen = (e) => {
+				webutil.sendWsMessage(ws, roomId, side, "registry");
+			};
+			ws.onmessage = (e) => {
+				console.log("(owner) ws onmessage() data:" + e.data.substr(0, 25) + "...");
+				const message = JSON.parse(e.data);
+				switch (message.type) {
+					case "match": {
+						// Make offer to start peer connection.
+						console.log("Make offer to start peer connection");
+						connect();
+						break;
+					}
+					case "answer": {
+						console.log("(owner) Received answer.");
+						setAnswer(message);
+						break;
+					}
+					case "candidate": {
+						console.log("Received ICE candidate ...");
+						const candidate = new RTCIceCandidate(message.ice);
+						console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
+						addIceCandidate(candidate);
+						break;
+					}
+					case "close": {
+						console.log("peer is closed ...");
+						hangUp();
+						break;
+					}
+					case "pong": {
+						console.log("pong!");
+						break;
+					}
+					default: {
+						console.log("Invalid message: " + message.type);
+						break;
+					}
+				}
+			};
 		};
-		ws.onmessage = (e) => {
-			console.log("(owner) ws onmessage() data:" + e.data.substr(0, 25) + "...");
-			const message = JSON.parse(e.data);
-			switch (message.type) {
-				case "match": {
-					// Make offer to start peer connection.
-					console.log("Make offer to start peer connection");
-					connect();
-					break;
-				}
-				case "answer": {
-					console.log("(owner) Received answer.");
-					setAnswer(message);
-					break;
-				}
-				case "candidate": {
-					console.log("Received ICE candidate ...");
-					const candidate = new RTCIceCandidate(message.ice);
-					console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
-					addIceCandidate(candidate);
-					break;
-				}
-				case "close": {
-					console.log("peer is closed ...");
-					hangUp();
-					break;
-				}
-				case "pong": {
-					console.log("pong!");
-					break;
-				}
-				default: {
-					console.log("Invalid message: " + message.type);
-					break;
-				}
-			}
-		};
+		await webutilLoader();
+		activate();
 	};
-	await webutilLoader();
-	setup();
-};
+
+} else {
+	console.warn("The curren page is not for the owner.");
+}
 
 // Start setup for screen sharing.
-async function setup() {
+async function activate() {
 	console.log("owner.js has activated.\nThe room id is: " + roomId);
 
 	// Prepare the screen which will be shared.
