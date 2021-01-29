@@ -1,0 +1,6 @@
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\publish\CommonizerRuler.exe
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\publish\CommonizerRuler.dll
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\publish\CommonizerRuler.deps.json
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\publish\CommonizerRuler.runtimeconfig.json
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\publish\CommonizerRuler.pdb
+C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\bin\Debug\netcoreapp3.1\publish\Newtonsoft.Json.dll
