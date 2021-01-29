@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 
 namespace CommonizerRuler
 {
@@ -57,14 +58,12 @@ namespace CommonizerRuler
         /// <returns></returns>
         private static string ProcessMessage(JObject data)
         {
-            var message = data["text"].Value<string>();
+            var message = data["order"].Value<string>();
             switch (message)
             {
                 case "test":
+                    WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
                     return "testing!";
-                case "ping":
-                    WinInterface.SetCursorPos(600, 600);
-                    return "pong!";
                 case "mouse_pos":
                     var pos = WinInterface.GetCursorPos(out bool suceed);
                     var content = new JProperty("positions",
@@ -73,6 +72,21 @@ namespace CommonizerRuler
                             new JProperty("y", pos.Y)
                             ));
                     return content.ToString();
+                case "set_mouse_ratio":
+                    var size = WinInterface.GetWindowSize(out bool suceed1);
+                    var x_ratio = float.Parse(data["x_ratio"].Value<string>());
+                    var y_ratio = float.Parse(data["y_ratio"].Value<string>());
+                    var position = new Point(
+                        (int)((float)size.X * (x_ratio) * 0.5f),
+                        (int)((float)size.Y * (y_ratio) * 0.5f));
+                    WinInterface.SetCursorPos(position.X, position.Y);
+
+                    return new JProperty("positions",
+                        new JObject(
+                            new JProperty("x", position.X),
+                            new JProperty("y", position.Y),
+                            new JProperty("size_x", size.X),
+                            new JProperty("size_y", size.Y))).ToString();
                 case "exit":
                     return "exit!";
                 default:

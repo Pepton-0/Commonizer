@@ -12,11 +12,14 @@ chrome.runtime.onMessage.addListener(
       sendResponse();
       console.log("try sending: contentextension_calling_response");
       chrome.tabs.sendMessage(sender.tab.id,"contentextension_calling_response");
-      // chrome.extension.sendRequest("cmdrequest");
-      //port.postMessage("ping");
       console.log("Try sending native message");
-      port.postMessage({ "text": "mouse_pos" });
-      port.postMessage({ "text": "ping"});
+      port.postMessage({ "order": "mouse_pos" });
+      /*
+      port.postMessage({
+        "order": "set_mouse_ratio",
+        "x_ratio": "0.5",
+        "y_ratio": "1.0"});*/
+      port.postMessage({ "order": "test" });
     }
     return true;
   }
@@ -26,15 +29,3 @@ port.onMessage.addListener((response) => {
   console.log("Received: " + response);
   console.log("Received JSON: " + JSON.stringify(response));
 });
-
-
-/*
-document.getElementById("nativeCaller").addEventListener("click", () => {
-  console.log("Call: Ping");
-  // chrome.extension.sendRequest("cmdrequest");
-  port.postMessage("ping");
-});
-
-port.onMessage.addListener((response) => {
-  console.log("Received: " + response);
-});*/

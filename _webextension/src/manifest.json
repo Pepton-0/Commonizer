@@ -16,7 +16,10 @@
   "content_scripts":[
     {
       "matches": ["*://commonizer.herokuapp.com/*", "*://localhost/*"],
-      "js": ["contentextension.js"]
+      "js": ["contentextension.js", "owner.js", "sender.js"]
     }
+  ],
+  "web_accessible_resources":[
+    "webutil.js"
   ]
 }

@@ -255,7 +255,7 @@ async function playVideo(element, stream) {
   element.srcObject = stream;
   try {
     await element.play();
-  } catch (erro) {
+  } catch (error) {
     console.log("error auto play:" + error);
   }
 }
