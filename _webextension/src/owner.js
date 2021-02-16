@@ -12,7 +12,8 @@ let negotiationneededCounter = 0;
 if (window.location.pathname.indexOf("/make") == 0) {
 	window.onload = async function () {
 		side = "owner";
-		roomId = window.roomId;
+		// roomId = window.roomId;
+		roomId = document.getElementById("roomId").value;
 		console.log(window.roomId);
 		const webutilLoader = async () => {
 			const src = chrome.runtime.getURL("webutil.js");

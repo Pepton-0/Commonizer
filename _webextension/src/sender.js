@@ -5,8 +5,9 @@ let screenElement = null;
 if (window.location.pathname.indexOf("/join") == 0) {
 	window.onload = async function () {
 		side = "sender";
-		screenElement = document.getElementById("screen");
-		roomId = window.roomId;
+		screenElement = document.getElementById("screen");";
+		// roomId = window.roomId;
+		roomId = document.getElementById("roomId").value;
 		const webutilLoader = async () => {
 			const src = chrome.runtime.getURL("webutil.js");
 			webutil = await import(src);
