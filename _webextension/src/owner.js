@@ -13,7 +13,8 @@ if (window.location.pathname.indexOf("/make") == 0) {
 	window.onload = async function () {
 		console.log("activate owner.js");
 		side = "owner";
-		roomId = window.roomId;
+		// roomId = window.roomId;
+		roomId = document.getElementById("roomId").value;
 		console.log(window.roomId);
 		const webutilLoader = async () => {
 			const src = chrome.runtime.getURL("webutil.js");
