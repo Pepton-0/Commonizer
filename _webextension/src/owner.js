@@ -11,7 +11,6 @@ let negotiationneededCounter = 0;
 
 if (window.location.pathname.indexOf("/make") == 0) {
 	window.onload = async function () {
-		console.log("activate owner.js");
 		side = "owner";
 		roomId = window.roomId;
 		console.log(window.roomId);
