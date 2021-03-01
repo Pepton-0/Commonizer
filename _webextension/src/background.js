@@ -13,12 +13,12 @@ chrome.runtime.onMessage.addListener(
       console.log("try sending: contentextension_calling_response");
       chrome.tabs.sendMessage(sender.tab.id,"contentextension_calling_response");
       console.log("Try sending native message");
-      port.postMessage({ "order": "mouse_pos" });
-      /*
+      //port.postMessage({ "order": "mouse_pos" });
+
       port.postMessage({
         "order": "set_mouse_ratio",
         "x_ratio": "0.5",
-        "y_ratio": "1.0"});*/
+        "y_ratio": "1.0"});
       port.postMessage({ "order": "test" });
     }
     return true;

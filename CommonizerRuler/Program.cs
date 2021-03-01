@@ -11,22 +11,37 @@ namespace CommonizerRuler
     {
         public static void Main(string[] args)
         {
-            JObject data;
-            while((data = Read()) != null)
-            {
-                var processed = ProcessMessage(data);
-                Write(processed);
+            //JObject data;
+            //while ((data = Read()) != null)
+            //{
+            //    var processed = ProcessMessage(data);
+            //    Write(processed);
 
-                if(processed == "exit!")
+            //    if (processed == "exit!")
+            //    {
+            //        // End this app.
+            //        return;
+            //    }
+            //}
+
+            string x;
+            while((x = Console.ReadLine()) != null)
+            {
+                switch (x)
                 {
-                    // End this app.
-                    return;
+                    case "teleport":
+                        var size = WinInterface.GetInternalWindowSize(out int state);
+                        WinInterface.SetCursorPos(size.X / 2, size.Y / 2);
+                        Console.WriteLine("Teleport: size:" + size.ToString() + " | state:" + state);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
 
         /// <summary>
-        /// Read Json data given by the commonizer web extension.
+        /// Read JSON data given by the commonizer web extension.
         /// </summary>
         /// <returns></returns>
         private static JObject Read()
@@ -65,7 +80,7 @@ namespace CommonizerRuler
                     WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
                     return "testing!";
                 case "mouse_pos":
-                    var pos = WinInterface.GetCursorPos(out bool suceed);
+                    var pos = WinInterface.GetCursorPos(out bool succeed);
                     var content = new JProperty("positions",
                         new JObject(
                             new JProperty("x", pos.X),
@@ -73,16 +88,17 @@ namespace CommonizerRuler
                             ));
                     return content.ToString();
                 case "set_mouse_ratio":
-                    var size = WinInterface.GetWindowSize(out bool suceed1);
+                    var size = WinInterface.GetInternalWindowSize(out int state);
                     var x_ratio = float.Parse(data["x_ratio"].Value<string>());
                     var y_ratio = float.Parse(data["y_ratio"].Value<string>());
                     var position = new Point(
-                        (int)((float)size.X * (x_ratio) * 0.5f),
-                        (int)((float)size.Y * (y_ratio) * 0.5f));
+                        (int)((float)size.X * (x_ratio)),
+                        (int)((float)size.Y * (y_ratio)));
                     WinInterface.SetCursorPos(position.X, position.Y);
 
                     return new JProperty("positions",
                         new JObject(
+                            new JProperty("state", state),
                             new JProperty("x", position.X),
                             new JProperty("y", position.Y),
                             new JProperty("size_x", size.X),
