@@ -160,25 +160,22 @@ namespace CommonizerRuler
         [DllImport("SHCore.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
         public static extern void GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, ref uint dpiX, ref uint dpiY);
 
-        private PROCESS_DPI_AWARENESS GetDpiState(uint processId)
+        private static uint GetParentProcessId()
         {
-            IntPtr handle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, processId);
-            if (handle != IntPtr.Zero)
+            var myProcId = Process.GetCurrentProcess().Id;
+            var query = string.Format("SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = {0}", myProcId);
+
+            using (var search = new ManagementObjectSearcher(@"root\CIMV2", query))
+            //クエリから結果を取得
+            using (var results = search.Get().GetEnumerator())
             {
-                PROCESS_DPI_AWARENESS value;
-                int result = GetProcessDpiAwareness(handle, out value);
-                if (result == S_OK)
-                {
-                    Debug.Print(value.ToString());
-                }
-                CloseHandle(handle);
-                if (result != S_OK)
-                {
-                    throw new Win32Exception(result);
-                }
-                return value;
+
+                if (!results.MoveNext()) throw new ApplicationException("Couldn't Get ParrentProcessId.");
+
+                var queryResult = results.Current;
+                //親プロセスのPIDを取得
+                return (uint)queryResult["ParentProcessId"];
             }
-            throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
         /// <summary>
@@ -194,17 +191,12 @@ namespace CommonizerRuler
 
             if (suceed)
             {
-                //TODO dpi関連のデータを、hwnd指定なしで取得できるようにしたい
-                /* TODO  そのために、
-                 * 
-                 * 1. ChromeウィンドウのProcessをWinInterface.GetParentProcessId()より取得
-                 * 2. https://stackoverflow.com/questions/1888863/how-to-get-main-window-handle-from-process-id
-                 *    より、ProcessIdから、メインのhwnd値を取得する関数を作成
-                 * 3. 下のMonitorFromWindow()に代入.
-                 * 4. GetDpiForMonitorでDPI値を取得.
-                 * 5. dpi, awareness、MDT_EFFECTIVE_DPIから、本当の認識されているサイズを取得
-                 * 
-                 */
+                // TODO 強制的にここになるように指定
+                if (true)
+                {
+                    state = 3;
+                    return new Point(devmode.dmPelsWidth, devmode.dmPelsHeight);
+                }
 
                 PROCESS_DPI_AWARENESS awareness; // DPI設定で、何かしらの処理方法が存在するかどうか
                 GetProcessDpiAwareness(new IntPtr(Process.GetCurrentProcess().Id), out awareness);
@@ -215,8 +207,8 @@ namespace CommonizerRuler
                 }
                 else
                 {
-                    IntPtr browserHwnd = //Process.GetProcessById((int)GetParentProcessId()).MainWindowHandle;
-                        Process.GetProcessById(46424).MainWindowHandle;
+                    IntPtr browserHwnd = Process.GetProcessById((int)GetParentProcessId()).MainWindowHandle;
+                        //Process.GetProcessById(46424).MainWindowHandle;
                     IntPtr hmonitor = MonitorFromWindow(browserHwnd, MonitorDefaultTo.MONITOR_DEFAULTTONEAREST);
                     uint dpiX = 1, dpiY = 1;
                     GetDpiForMonitor(hmonitor, MonitorDpiType.EffectiveDpi, ref dpiX, ref dpiY);
@@ -244,22 +236,11 @@ namespace CommonizerRuler
             else
                 return new Point(int.MaxValue, int.MaxValue); // return a invalid number which represents infinity.
         }
-        private static uint GetParentProcessId()
+
+        public static string GetDpi()
         {
-            var myProcId = Process.GetCurrentProcess().Id;
-            var query = string.Format("SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = {0}", myProcId);
-
-            using (var search = new ManagementObjectSearcher(@"root\CIMV2", query))
-            //クエリから結果を取得
-            using (var results = search.Get().GetEnumerator())
-            {
-
-                if (!results.MoveNext()) throw new ApplicationException("Couldn't Get ParrentProcessId.");
-
-                var queryResult = results.Current;
-                //親プロセスのPIDを取得
-                return (uint)queryResult["ParentProcessId"];
-            }
+            // TODO Chrome拡張機能の時、この行はエラーを引き起こす.
+            return Process.GetProcessById((int)GetParentProcessId()).ToString();
         }
     }
 }

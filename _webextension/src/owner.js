@@ -1,8 +1,5 @@
-// TODO 1. SetCursorPos, GetCursorPosを高DPIに対応させること.
-// TODO 2. screenElementでの割合計算が上手くいっていないので修正すること
-
-// TODO なんでroomIdがundefinedなんだ？
-// TODO どうして、sender.jsも起動しちゃうんだ？(content_scriptsにsender.jsも入れた場合)
+// TODO 1.x_ratio, y_ratioを読み込み、background.jsに送信できるようにする
+// TODO 2.母のPCで実験できるようにする
 
 console.log("Load owner.js script");
 
@@ -12,7 +9,6 @@ let negotiationneededCounter = 0;
 if (window.location.pathname.indexOf("/make") == 0) {
 	window.onload = async function () {
 		side = "owner";
-		// roomId = window.roomId;
 		roomId = document.getElementById("roomId").value;
 		console.log(window.roomId);
 		const webutilLoader = async () => {
@@ -29,24 +25,24 @@ if (window.location.pathname.indexOf("/make") == 0) {
 					case "match": {
 						// Make offer to start peer connection.
 						console.log("Make offer to start peer connection");
-						connect();
+						connectAsOwner();
 						break;
 					}
 					case "answer": {
 						console.log("(owner) Received answer.");
-						setAnswer(message);
+						setAnswerForOwner(message);
 						break;
 					}
 					case "candidate": {
 						console.log("Received ICE candidate ...");
 						const candidate = new RTCIceCandidate(message.ice);
 						console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
-						addIceCandidate(candidate);
+						addIceCandidateForOwner(candidate);
 						break;
 					}
 					case "close": {
 						console.log("peer is closed ...");
-						hangUp();
+						hangUpOwner();
 						break;
 					}
 					case "pong": {
@@ -61,7 +57,7 @@ if (window.location.pathname.indexOf("/make") == 0) {
 			};
 		};
 		await webutilLoader();
-		activate();
+		activateOwner();
 	};
 
 } else {
@@ -69,7 +65,7 @@ if (window.location.pathname.indexOf("/make") == 0) {
 }
 
 // Start setup for screen sharing.
-async function activate() {
+async function activateOwner() {
 	console.log("owner.js has activated.\nThe room id is: " + roomId);
 
 	// Prepare the screen which will be shared.
@@ -92,16 +88,16 @@ async function activate() {
 	});
 };
 
-function connect() {
+function connectAsOwner() {
   if (!peerConnection) {
     console.log("--Make Offer");
-    peerConnection = prepareNewConnection(); // as Offer
+    peerConnection = prepareNewConnectionForOwner(); // as Offer
   } else { // すでに接続されていたら処理しない
     console.warn("--Failed. Peer already exists.");
   }
 }
 
-function hangUp() {
+function hangUpOwner() {
 	if (peerConnection) {
 		if (peerConnection.iceConnectionState !== "closed") {
 			peerConnection.close();
@@ -117,10 +113,10 @@ function hangUp() {
 
 // WebRTCを利用する準備をする
 // Offer: SDPで、通信を始める側(Offer)と通信を受け入れる側(Answer)のうち、Offerのこと.
-function prepareNewConnection() {
+function prepareNewConnectionForOwner() {
 	// 自分のコンピュータの、グローバルなIPアドレスを取得する設定.
-  const pc_config = {
-    iceServers: [{ urls: "stun:stun.webrtc.ecl.ntt.com:3478" }],
+	const pc_config = {
+		iceServers: [{ urls: "stun:stun.webrtc.ecl.ntt.com:3478" }],
 	};
 
 	const peer = new RTCPeerConnection(pc_config);
@@ -136,21 +132,32 @@ function prepareNewConnection() {
 		webutil.goErrorPage("--localStream was not found.");
 	}
 
-	mousePosChannel = peer.createDataChannel("mouse_pos");
-		mousePosChannel.onopen = function () {
-			console.log("--Mouse position data channel open");
-		};
-		mousePosChannel.onclose = function () {
-			console.log("--Mouse position data channel close");
-		};
-		mousePosChannel.onmessage = function (e) {
+	peer.ondatachannel = function (e) {
+		var receivedChannel = e.channel;
+		console.log("Received some datachannel: " + e.type);
+		receivedChannel.onopen = () => console.log("--Mouse position data channel open");
+		receivedChannel.onclose = () => console.log("--Mouse position data channel close");
+		receivedChannel.onmessage = function (e) {
 			console.log("--Mouse position update: " + e.data);
-			// case "remote": {
-			// 	console.log("Remote");
-			// 	console.log("Control: @" + message.control.x_ratio + ":" + message.control.y_ratio);
-			// 	break;
+			// switch (e.data["type"]) {
+			// 	case "remote":
+					var control = e.data["message"];
+					chrome.runtime.sendMessage(JSON.stringify(
+						{
+						"order": "set_mouse_ratio",
+						"x_ratio": /*e.data["control"].x_ratio*/0.5,
+						"y_ratio": /*(e.data["control"].y_ratio-1)*/0.5
+						}
+					));
+			// 		break;
 			// }
-	};
+		}
+	}
+
+	//TODO なんか、これがあったらmouseの通信が上手くいった.理由は分からん.
+	var amuse = peer.createDataChannel("amuse");
+	amuse.onopen = (e) => console.log("amuse open: " + e);
+	amuse.onclose = (e) => console.log("amuse close:" + e);
 
 	// Offer側でネゴシエーションが必要になったときの処理を登録
 	peer.onnegotiationneeded = async () => {
@@ -163,7 +170,7 @@ function prepareNewConnection() {
 				console.log("--Suceeded setLocalDescription() in promise");
 
 				// シグナリングサーバーに、行いたい接続について情報を送る
-				sendSdp(peer.localDescription);
+				sendSdpAsOwner(peer.localDescription);
 
 				negotiationneededCounter++;
 			}
@@ -177,7 +184,7 @@ function prepareNewConnection() {
 	peer.onicecandidate = (e) => {
 		if (e.candidate) {
 			console.log("--Found ICE candidate: " + e.candidate);
-			sendIceCandidate(e.candidate);
+			sendIceCandidateAsOwner(e.candidate);
 		}
 		else {
 			console.log("--Empty ice event");
@@ -193,7 +200,7 @@ function prepareNewConnection() {
 			case "closed":
 			case "failed":
 				if (peerConnection)
-					hangUp();
+					hangUpOwner();
 				break;
 			case "disconnected":
 				break;
@@ -204,7 +211,7 @@ function prepareNewConnection() {
 }
 
 // シグナリングサーバーに、行いたい接続について情報を送る
-function sendSdp(sessionDescription) {
+function sendSdpAsOwner(sessionDescription) {
 	console.log("--==Send session description to signaling server");
   const description = JSON.stringify(sessionDescription);
 	webutil.sendWsMessage(ws, roomId, side, description);
@@ -212,7 +219,7 @@ function sendSdp(sessionDescription) {
 }
 
 // ICE candaidate受信時にセットする
-function addIceCandidate(candidate) {
+function addIceCandidateForOwner(candidate) {
   if (peerConnection) {
     peerConnection.addIceCandidate(candidate);
   } else {
@@ -222,7 +229,7 @@ function addIceCandidate(candidate) {
 }
 
 // シグナリングサーバーに、接続手段の候補(ICE candidate)を送る
-function sendIceCandidate(candidate) {
+function sendIceCandidateAsOwner(candidate) {
   console.log("--==Send ICE candidate");
 	const message =
 		JSON.stringify({ type: "candidate", ice: candidate });
@@ -230,7 +237,7 @@ function sendIceCandidate(candidate) {
 	webutil.sendWsMessage(ws, roomId, side, message);
 }
 
-async function setAnswer(sessionDescription) {
+async function setAnswerForOwner(sessionDescription) {
 	if (!peerConnection) {
 		webutil.goErrorPage("--peerConnection not exists!");
 		return;

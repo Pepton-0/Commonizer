@@ -1,12 +1,13 @@
 console.log("Load sender.js script");
 
 let screenElement = null;
+let senderDebugElement = null;
 
 if (window.location.pathname.indexOf("/join") == 0) {
 	window.onload = async function () {
 		side = "sender";
 		screenElement = document.getElementById("screen");
-		// roomId = window.roomId;
+		senderDebugElement = document.getElementById("debugConsole");
 		roomId = document.getElementById("roomId").value;
 		const webutilLoader = async () => {
 			const src = chrome.runtime.getURL("webutil.js");
@@ -21,19 +22,19 @@ if (window.location.pathname.indexOf("/join") == 0) {
 				switch (message.type) {
 					case "offer": {
 						console.log("(" + side + ") Received offer ...");
-						setOffer(message);
+						setOfferForSender(message);
 						break;
 					}
 					case "candidate": {
 						console.log("Received ICE candidate ...");
 						const candidate = new RTCIceCandidate(message.ice);
 						console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
-						addIceCandidate(candidate);
+						addIceCandidateForSender(candidate);
 						break;
 					}
 					case "close": {
 						console.log("peer is closed ...");
-						hangUp();
+						hangUpSender();
 						break;
 					}
 					case "ping": {
@@ -50,14 +51,14 @@ if (window.location.pathname.indexOf("/join") == 0) {
 			};
 		};
 		await webutilLoader();
-		activate();
+		activateSender();
 	};
 }
 else {
 	console.warn("The curren page is not for the sender.");
 }
 
-function activate() {
+function activateSender() {
 	console.log("sender.js has activated.\nThe room id is: " + window.roomId);
 
 	screenElement.addEventListener("mousedown", (e) => { console.log("mouse: down @" + e.clientX + ":" + e.clientY);
@@ -66,15 +67,16 @@ function activate() {
 	// こちらが動かしているときだけ、あちらのマウスの座標は変更される. あちらの人も自分で操作したい時があるだろうから.
 	screenElement.addEventListener("mousemove", (e) => {
 		if (mousePosChannel && mousePosChannel.readyState == "open") {
-			// TODO なんか計算がおかしい……
+			// TODO yRatioが、本来より+0.5だけずれてる.
 			const xRatio = e.clientX / screenElement.clientWidth;
 			const yRatio = e.clientY / screenElement.clientHeight;
 			console.log("mouse moved. @" + xRatio.toFixed(2) + ":" + yRatio.toFixed(2));
+			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2);
 			let message = JSON.stringify({
 				"type": "remote",
 				"control": {
 					"x_ratio": xRatio,
-					"y_ratio": yRatio
+					"y_ratio": (yRatio-0.5)
 				}
 			});
 			mousePosChannel.send(message);
@@ -82,7 +84,7 @@ function activate() {
 	});
 };
 
-function hangUp() {
+function hangUpSender() {
 	if (peerConnection) {
 		if (peerConnection.iceConnectionState !== "closed") {
 			peerConnection.close();
@@ -97,7 +99,7 @@ function hangUp() {
 
 // WebRTCを利用する準備をする
 // Answer: SDPで、通信を始める側(Offer)と通信を受け入れる側(Answer)のうち、Offerのこと.
-function prepareNewConnection() {
+function prepareNewConnectionForSender() {
 	// 自分のコンピュータの、グローバルなIPアドレスを取得する設定.
 	const pc_config = {
 		iceServers: [{ urls: "stun:stun.webrtc.ecl.ntt.com:3478" }],
@@ -108,7 +110,7 @@ function prepareNewConnection() {
 	peer.onicecandidate = (e) => {
 		if (e.candidate) {
 			console.log("--Found ICE candidate: " + e.candidate);
-			sendIceCandidate(e.candidate);
+			sendIceCandidateAsSender(e.candidate);
 		} else {
 			console.log("--Empty ice event");
 		}
@@ -123,7 +125,7 @@ function prepareNewConnection() {
 			case "closed":
 			case "failed":
 				if (peerConnection)
-					hangUp();
+					hangUpSender();
 				break;
 			case "disconnected":
 				break;
@@ -141,6 +143,13 @@ function prepareNewConnection() {
 		}
 	};
 
+	peer.ondatachannel = function (e) {
+		console.log("ondatachannel:" + e.type);
+		var received = e.channel;
+		received.onopen = (e) => console.log("something open: " + e);
+		received.onclose = (e) => console.log("something close:" + e);
+	}
+
 	// マウスの移動データを送信する準備
 	mousePosChannel = peer.createDataChannel("mouse_pos");
 	mousePosChannel.onopen = function () {
@@ -150,27 +159,28 @@ function prepareNewConnection() {
 		console.log("--Mouse position data channel close");
 	};
 
+
 	return peer;
 }
 
 // Answer側として、Offer側からのメッセージが届いたら、
 // SDPをセットする
-async function setOffer(sessionDescription) {
+async function setOfferForSender(sessionDescription) {
   if (peerConnection) {
     console.error("--peerConnection alreay exist!");
 	}
-	peerConnection = prepareNewConnection();
+	peerConnection = prepareNewConnectionForSender();
 	try {
 		await peerConnection.setRemoteDescription(sessionDescription);
 		console.log("--Succeeded setRemoteDescription(offer) in promise");
-		makeAnswer();
+		makeAnswerAsSender();
 	} catch (err) {
 		console.error("--Failed setRemoteDescription(answer) ERROR: " + err);
 	}
 }
 
 // Answer SDPを生成する
-async function makeAnswer() {
+async function makeAnswerAsSender() {
   console.log("--==Send Answer. Creating remote session description...");
   if (!peerConnection) {
     console.error("--==peerConnection NOT exist!");
@@ -181,14 +191,14 @@ async function makeAnswer() {
     console.log("--==Suceeded createAnswer() in promise");
     await peerConnection.setLocalDescription(answer);
     console.log("--==Suceeded setLocalDescription() in promise");
-    sendSdp(peerConnection.localDescription);
+    sendSdpAsSender(peerConnection.localDescription);
   } catch (err) {
     console.error(err);
   }
 }
 
 // シグナリングサーバーに、接続手段の候補(ICE candidate)を送る
-function sendIceCandidate(candidate) {
+function sendIceCandidateAsSender(candidate) {
   console.log("--==Send ICE candidate");
 	const message =
 		JSON.stringify({ type: "candidate", ice: candidate });
@@ -197,7 +207,7 @@ function sendIceCandidate(candidate) {
 }
 
 // ICE candaidate受信時にセットする
-function addIceCandidate(candidate) {
+function addIceCandidateForSender(candidate) {
   if (peerConnection) {
     peerConnection.addIceCandidate(candidate);
   } else {
@@ -207,7 +217,7 @@ function addIceCandidate(candidate) {
 }
 
 // シグナリングサーバーに、行いたい接続について情報を送る
-function sendSdp(sessionDescription) {
+function sendSdpAsSender(sessionDescription) {
 	console.log("--==Send session description to signaling server");
   const description = JSON.stringify(sessionDescription);
 	webutil.sendWsMessage(ws, roomId, side, description);

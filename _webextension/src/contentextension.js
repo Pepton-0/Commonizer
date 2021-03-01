@@ -1,7 +1,7 @@
 console.log("Commonizer webextension is activated!");
 document.body.style.border = "5px solid red";
 
-
+/*
 document.getElementById("nativeCaller").addEventListener("click", () =>
 {
   console.log("try sending: background_calling_test");
@@ -10,7 +10,7 @@ document.getElementById("nativeCaller").addEventListener("click", () =>
 
 document.getElementById("repeater").addEventListener("click", () => {
   repeat();
-});
+});*/
 
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {

@@ -12,13 +12,17 @@
     <title>Commonizer (Sender)</title>
   </head>
   <body>
-    // Global variables
+    <!-- Global variables /!-->
     <input type="hidden" id="roomId" value="<%=@room_id%>">
     <header>
       <font size="32">Sender </font><%= @room_id %>
     </header>
     <br>
-    <div>MENU</div>
+    <div>
+      MENU
+      <br>
+      <div id="debugConsole"></div>
+    </div>
     <div>
       <video id="screen" width="569" height="320" class="screen" autoplay playsinline muted loop >
       </video>

@@ -11,33 +11,33 @@ namespace CommonizerRuler
     {
         public static void Main(string[] args)
         {
-            //JObject data;
-            //while ((data = Read()) != null)
-            //{
-            //    var processed = ProcessMessage(data);
-            //    Write(processed);
-
-            //    if (processed == "exit!")
-            //    {
-            //        // End this app.
-            //        return;
-            //    }
-            //}
-
-            string x;
-            while((x = Console.ReadLine()) != null)
+            JObject data;
+            while ((data = Read()) != null)
             {
-                switch (x)
+                var processed = ProcessMessage(data);
+                Write(processed);
+
+                if (processed == "exit!")
                 {
-                    case "teleport":
-                        var size = WinInterface.GetInternalWindowSize(out int state);
-                        WinInterface.SetCursorPos(size.X / 2, size.Y / 2);
-                        Console.WriteLine("Teleport: size:" + size.ToString() + " | state:" + state);
-                        break;
-                    default:
-                        break;
+                    // End this app.
+                    return;
                 }
             }
+
+            //string x;
+            //while((x = Console.ReadLine()) != null)
+            //{
+            //    switch (x)
+            //    {
+            //        case "teleport":
+            //            var size = WinInterface.GetInternalWindowSize(out int state);
+            //            WinInterface.SetCursorPos(size.X / 2, size.Y / 2);
+            //            Console.WriteLine("Teleport: size:" + size.ToString() + " | state:" + state);
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
         }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace CommonizerRuler
             switch (message)
             {
                 case "test":
-                    WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
-                    return "testing!";
+                    //WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
+                    return "test!";
                 case "mouse_pos":
                     var pos = WinInterface.GetCursorPos(out bool succeed);
                     var content = new JProperty("positions",
