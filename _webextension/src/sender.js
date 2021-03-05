@@ -77,14 +77,14 @@ function activateSender() {
 			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
 				"____type:" + (typeof xRatio) + ":" + (typeof yRatio);
 
-			/*const message = JSON.stringify({
+			const message = JSON.stringify({
 				"type": "remote",
 				"control": {
 					"x_ratio": xRatio,
 					"y_ratio": yRatio
 				}
 			});
-			mousePosChannel.send(message);*/
+			mousePosChannel.send(message);
 		}
 	});
 };

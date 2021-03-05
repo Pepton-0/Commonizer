@@ -104,6 +104,9 @@ namespace CommonizerRuler
                             new JProperty("y", position.Y),
                             new JProperty("size_x", size.X),
                             new JProperty("size_y", size.Y))).ToString();
+                case "left_down":
+
+                    break;
                 case "exit":
                     return "exit!";
                 default:
