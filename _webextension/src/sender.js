@@ -74,15 +74,17 @@ function activateSender() {
 			let yRatio = e.clientY / screenElement.clientHeight;
 			yRatio = Math.max(Math.min(Math.abs(yRatio - 0.5), 1), 0);
 			console.log("mouse moved. @" + xRatio.toFixed(2) + ":" + yRatio.toFixed(2));
-			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2);
-			const message = JSON.stringify({
+			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
+				"____type:" + (typeof xRatio) + ":" + (typeof yRatio);
+
+			/*const message = JSON.stringify({
 				"type": "remote",
 				"control": {
 					"x_ratio": xRatio,
 					"y_ratio": yRatio
 				}
 			});
-			mousePosChannel.send(message);
+			mousePosChannel.send(message);*/
 		}
 	});
 };

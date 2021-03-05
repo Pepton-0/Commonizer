@@ -146,7 +146,7 @@ function prepareNewConnectionForOwner() {
 						{
 						"order": "set_mouse_ratio",
 						"x_ratio": jsonMsg["control"].x_ratio,
-						"y_ratio": (jsonMsg["control"].y_ratio-1)
+						"y_ratio": (jsonMsg["control"].y_ratio)
 						}
 					));
 			 		break;
