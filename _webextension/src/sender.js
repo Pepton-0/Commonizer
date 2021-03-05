@@ -61,7 +61,8 @@ else {
 function activateSender() {
 	console.log("sender.js has activated.\nThe room id is: " + window.roomId);
 
-	screenElement.addEventListener("mousedown", (e) => { console.log("mouse: down @" + e.clientX + ":" + e.clientY);
+	screenElement.addEventListener("mousedown", (e) => {
+		console.log("mouse: down @" + e.clientX + ":" + e.clientY);
 	});
 
 	// こちらが動かしているときだけ、あちらのマウスの座標は変更される. あちらの人も自分で操作したい時があるだろうから.
@@ -76,7 +77,7 @@ function activateSender() {
 				"type": "remote",
 				"control": {
 					"x_ratio": xRatio,
-					"y_ratio": (yRatio-0.5)
+					"y_ratio": (yRatio - 0.5)
 				}
 			});
 			mousePosChannel.send(message);
@@ -89,8 +90,8 @@ function hangUpSender() {
 		if (peerConnection.iceConnectionState !== "closed") {
 			peerConnection.close();
 			peerConnection = null;
-      const message = JSON.stringify({ type: "close" });
-      console.log("Send close message to signaling server");
+			const message = JSON.stringify({ type: "close" });
+			console.log("Send close message to signaling server");
 			webutil.sendWsMessage(ws, roomId, side, message);
 		}
 	}
@@ -166,8 +167,8 @@ function prepareNewConnectionForSender() {
 // Answer側として、Offer側からのメッセージが届いたら、
 // SDPをセットする
 async function setOfferForSender(sessionDescription) {
-  if (peerConnection) {
-    console.error("--peerConnection alreay exist!");
+	if (peerConnection) {
+		console.error("--peerConnection alreay exist!");
 	}
 	peerConnection = prepareNewConnectionForSender();
 	try {
@@ -181,45 +182,45 @@ async function setOfferForSender(sessionDescription) {
 
 // Answer SDPを生成する
 async function makeAnswerAsSender() {
-  console.log("--==Send Answer. Creating remote session description...");
-  if (!peerConnection) {
-    console.error("--==peerConnection NOT exist!");
-    return;
-  }
-  try {
-    let answer = await peerConnection.createAnswer();
-    console.log("--==Suceeded createAnswer() in promise");
-    await peerConnection.setLocalDescription(answer);
-    console.log("--==Suceeded setLocalDescription() in promise");
-    sendSdpAsSender(peerConnection.localDescription);
-  } catch (err) {
-    console.error(err);
-  }
+	console.log("--==Send Answer. Creating remote session description...");
+	if (!peerConnection) {
+		console.error("--==peerConnection NOT exist!");
+		return;
+	}
+	try {
+		let answer = await peerConnection.createAnswer();
+		console.log("--==Suceeded createAnswer() in promise");
+		await peerConnection.setLocalDescription(answer);
+		console.log("--==Suceeded setLocalDescription() in promise");
+		sendSdpAsSender(peerConnection.localDescription);
+	} catch (err) {
+		console.error(err);
+	}
 }
 
 // シグナリングサーバーに、接続手段の候補(ICE candidate)を送る
 function sendIceCandidateAsSender(candidate) {
-  console.log("--==Send ICE candidate");
+	console.log("--==Send ICE candidate");
 	const message =
 		JSON.stringify({ type: "candidate", ice: candidate });
-  console.log("--==Sending candidate=" + message);
+	console.log("--==Sending candidate=" + message);
 	webutil.sendWsMessage(ws, roomId, side, message);
 }
 
 // ICE candaidate受信時にセットする
 function addIceCandidateForSender(candidate) {
-  if (peerConnection) {
-    peerConnection.addIceCandidate(candidate);
-  } else {
-    console.error("PeerConnection not exist!");
-    return;
-  }
+	if (peerConnection) {
+		peerConnection.addIceCandidate(candidate);
+	} else {
+		console.error("PeerConnection not exist!");
+		return;
+	}
 }
 
 // シグナリングサーバーに、行いたい接続について情報を送る
 function sendSdpAsSender(sessionDescription) {
 	console.log("--==Send session description to signaling server");
-  const description = JSON.stringify(sessionDescription);
+	const description = JSON.stringify(sessionDescription);
 	webutil.sendWsMessage(ws, roomId, side, description);
 	console.log("--==Sent SDP: " + description.substr(0, 25) + "...");
 }

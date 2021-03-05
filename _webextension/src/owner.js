@@ -139,18 +139,18 @@ function prepareNewConnectionForOwner() {
 		receivedChannel.onclose = () => console.log("--Mouse position data channel close");
 		receivedChannel.onmessage = function (e) {
 			console.log("--Mouse position update: " + e.data);
-			// switch (e.data["type"]) {
-			// 	case "remote":
-					var control = e.data["message"];
+			var jsonMsg = JSON.parse(e.data);
+			 switch (jsonMsg["type"]) {
+			 	case "remote":
 					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "set_mouse_ratio",
-						"x_ratio": /*e.data["control"].x_ratio*/0.5,
-						"y_ratio": /*(e.data["control"].y_ratio-1)*/0.5
+						"x_ratio": jsonMsg["control"].x_ratio,
+						"y_ratio": (jsonMsg["control"].y_ratio-1)
 						}
 					));
-			// 		break;
-			// }
+			 		break;
+			 }
 		}
 	}
 
