@@ -76,6 +76,7 @@ namespace CommonizerRuler
             var message = data["order"].Value<string>();
             switch (message)
             {
+                /*
                 case "test":
                     //WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
                     return "test!";
@@ -86,7 +87,7 @@ namespace CommonizerRuler
                             new JProperty("x", pos.X),
                             new JProperty("y", pos.Y)
                             ));
-                    return content.ToString();
+                    return content.ToString();*/
                 case "set_mouse_ratio":
                     var size = WinInterface.GetInternalWindowSize(out int state);
                     var x_ratio = float.Parse(data["x_ratio"].Value<string>());

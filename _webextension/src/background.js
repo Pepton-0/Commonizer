@@ -5,7 +5,9 @@ var port = chrome.runtime.connectNative("commonizer_webextension");
 
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
+    // TODO sampleでのテストボタンだとJSONじゃないので、エラーが起きてしまう
     var json = JSON.parse(request);
+
     console.log("received something");
     if (request == "background_calling_test") {
       console.log("Received: background_calling_test");

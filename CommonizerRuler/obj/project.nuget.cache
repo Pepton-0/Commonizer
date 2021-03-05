@@ -1,16 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "/YN7xTtawz2kL3aaZzssPe6Udg6MK6ERyNjmoPk/22RioJFWJ/lIMSZk+oH3A5CuUPmc7W5dcYBQBeS0N9jG5Q==",
+  "dgSpecHash": "hwlYEmOrLHUHOnaAYZzSY2PweZ5YoI9KLOZ/xUZAHl7ZEQXbKGxgjx7PGSSvi3UGrX16y1RjfMcxIM2SnjLEVA==",
   "success": true,
   "projectFilePath": "C:\\Users\\kent2\\Desktop\\MyProgram\\Docker\\commonizer\\CommonizerRuler\\CommonizerRuler.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\kent2\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
-    "C:\\Users\\kent2\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
-    "C:\\Users\\kent2\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
-    "C:\\Users\\kent2\\.nuget\\packages\\system.codedom\\5.0.0\\system.codedom.5.0.0.nupkg.sha512",
-    "C:\\Users\\kent2\\.nuget\\packages\\system.management\\5.0.0\\system.management.5.0.0.nupkg.sha512",
-    "C:\\Users\\kent2\\.nuget\\packages\\system.security.accesscontrol\\5.0.0\\system.security.accesscontrol.5.0.0.nupkg.sha512",
-    "C:\\Users\\kent2\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512"
+    "C:\\Users\\kent2\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
   ],
   "logs": []
 }

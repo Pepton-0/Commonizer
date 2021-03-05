@@ -1,9 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using System.Drawing;
+/*
 using System;
 using System.ComponentModel;
 using System.Management;
 using System.Diagnostics;
+*/
 
 namespace CommonizerRuler
 {
@@ -144,6 +146,7 @@ namespace CommonizerRuler
         [DllImport("user32.dll")]
         private static extern bool EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE devMode);
 
+        /*
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, MonitorDefaultTo dwFlags);
 
@@ -176,7 +179,7 @@ namespace CommonizerRuler
                 //親プロセスのPIDを取得
                 return (uint)queryResult["ParentProcessId"];
             }
-        }
+        }*/
 
         /// <summary>
         /// マルチモニタにも対応したいなぁ
@@ -189,8 +192,9 @@ namespace CommonizerRuler
             devmode.dmSize = (short)Marshal.SizeOf(devmode);
             bool suceed = EnumDisplaySettings(null, enum_current_settings, ref devmode);
 
+            /*
             if (suceed)
-            {
+            {*/
                 // TODO 強制的にここになるように指定
                 if (true)
                 {
@@ -198,6 +202,7 @@ namespace CommonizerRuler
                     return new Point(devmode.dmPelsWidth, devmode.dmPelsHeight);
                 }
 
+                /*
                 PROCESS_DPI_AWARENESS awareness; // DPI設定で、何かしらの処理方法が存在するかどうか
                 GetProcessDpiAwareness(new IntPtr(Process.GetCurrentProcess().Id), out awareness);
                 if(awareness == PROCESS_DPI_AWARENESS.PROCESS_DPI_UNAWARE)
@@ -223,7 +228,7 @@ namespace CommonizerRuler
             {
                 state = 0;
                 return new Point(int.MaxValue, int.MinValue); // return a invalid number which represents infinity
-            }
+            }*/
         }
 
         public static Point GetCursorPos(out bool succeed)
@@ -237,10 +242,12 @@ namespace CommonizerRuler
                 return new Point(int.MaxValue, int.MaxValue); // return a invalid number which represents infinity.
         }
 
+        /*
         public static string GetDpi()
         {
             // TODO Chrome拡張機能の時、この行はエラーを引き起こす.
             return Process.GetProcessById((int)GetParentProcessId()).ToString();
         }
+        */
     }
 }
