@@ -1,5 +1,6 @@
-// TODO マウスのクリック動作も共有できるようにする(C#のexeをwebextensionに追加・js部分の作成).
 // TODO 何故amuseがあると上手くいくのかを追及する
+// TODO マウスの共有位置がずれているのを解決する(xが0.04ほどずれてる.HTML関係？
+// TODO キーおしっぱの状態が継続され、owner側コンピューターで上手い操作が出来なくなることがある.
 
 console.log("Load owner.js script");
 
