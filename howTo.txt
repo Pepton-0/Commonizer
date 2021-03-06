@@ -18,8 +18,9 @@ Localでのテスト方法
 
 
 Herokuへのアップロード方法
-    本体:
+    本体(commonizer.herokuapp.com):
         git push heroku master
 
-    signalingサーバー:
-        git push heroku master -f (新たにgitプロジェクトを作る必要がありそう, -f:は強制変更)
+    signalingサーバー(commonizer0signaling):
+        1. heroku git:remote -a commonizer0signaling
+        2. git push heroku master -f (新たにgitプロジェクトを作る必要がありそう, -f:は強制変更)
