@@ -12,4 +12,3 @@ C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\net
 C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.dll
 C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.pdb
 C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.genruntimeconfig.cache
-C:\Users\kent2\Desktop\MyProgram\Docker\commonizer\CommonizerRuler\obj\Debug\netcoreapp3.1\CommonizerRuler.csprojAssemblyReference.cache

@@ -321,30 +321,37 @@ namespace CommonizerRuler
             {
                 return -1; // 失敗ステート
             }
-            var input = new INPUT
+            try
             {
-                type = INPUT_MOUSE,
-                ui = new INPUT_UNION
+                var input = new INPUT
                 {
-                    mouse = new MOUSEINPUT
+                    type = INPUT_MOUSE,
+                    ui = new INPUT_UNION
                     {
-                        dwFlags = number switch
+                        mouse = new MOUSEINPUT
                         {
-                            0 => MOUSEEVENTF_LEFTDOWN,
-                            1 => MOUSEEVENTF_RIGHTDOWN,
-                            2 => MOUSEEVENTF_MIDDLEDOWN,
-                            _ => throw new NotImplementedException() // Other number can't be allowed.
-                        },
-                        dx = pos.X,
-                        dy = pos.Y,
-                        mouseData = 0,
-                        dwExtraInfo = IntPtr.Zero,
-                        time = 0
+                            dwFlags = number switch
+                            {
+                                0 => MOUSEEVENTF_LEFTDOWN,
+                                1 => MOUSEEVENTF_RIGHTDOWN,
+                                2 => MOUSEEVENTF_MIDDLEDOWN,
+                                _ => throw new NotImplementedException() // Other number can't be allowed.
+                            },
+                            dx = pos.X,
+                            dy = pos.Y,
+                            mouseData = 0,
+                            dwExtraInfo = IntPtr.Zero,
+                            time = 0
+                        }
                     }
-                }
-            };
-            SendInput(2, ref input, Marshal.SizeOf(input));
-            return 0; // 成功ステート
+                };
+                SendInput(2, ref input, Marshal.SizeOf(input));
+                return 0; // 成功ステート
+            }
+            catch (Exception)
+            {
+                return -2; // 例外発生ステート
+            }
         }
 
         /// <summary>
@@ -358,30 +365,36 @@ namespace CommonizerRuler
             {
                 return -1; // 失敗ステート
             }
-            var input = new INPUT
+            try
             {
-                type = INPUT_MOUSE,
-                ui = new INPUT_UNION
+                var input = new INPUT
                 {
-                    mouse = new MOUSEINPUT
+                    type = INPUT_MOUSE,
+                    ui = new INPUT_UNION
                     {
-                        dwFlags = number switch
+                        mouse = new MOUSEINPUT
                         {
-                            0 => MOUSEEVENTF_LEFTUP,
-                            1 => MOUSEEVENTF_RIGHTUP,
-                            2 => MOUSEEVENTF_MIDDLEUP,
-                            _ => throw new NotImplementedException() // Other number can't be allowed.
-                        },
-                        dx = pos.X,
-                        dy = pos.Y,
-                        mouseData = 0,
-                        dwExtraInfo = IntPtr.Zero,
-                        time = 0
+                            dwFlags = number switch
+                            {
+                                0 => MOUSEEVENTF_LEFTUP,
+                                1 => MOUSEEVENTF_RIGHTUP,
+                                2 => MOUSEEVENTF_MIDDLEUP,
+                                _ => throw new NotImplementedException() // Other number can't be allowed.
+                            },
+                            dx = pos.X,
+                            dy = pos.Y,
+                            mouseData = 0,
+                            dwExtraInfo = IntPtr.Zero,
+                            time = 0
+                        }
                     }
-                }
-            };
-            SendInput(2, ref input, Marshal.SizeOf(input));
-            return 0; // 成功ステート
+                };
+                SendInput(2, ref input, Marshal.SizeOf(input));
+                return 0; // 成功ステート
+            }catch(Exception)
+            {
+                return -2;// 例外発生ステート
+            }
         }
 
         /*
