@@ -108,6 +108,7 @@ namespace CommonizerRuler
             public INPUT_UNION ui;
         };
 
+        /*
         /// <summary>
         /// Identifies dots per inch (dpi) type.
         /// </summary>
@@ -168,7 +169,7 @@ namespace CommonizerRuler
         }
 
         private const int PROCESS_QUERY_INFORMATION = 0x0400;
-        private const int PROCESS_VM_READ = 0x0010;
+        private const int PROCESS_VM_READ = 0x0010;*/
 
         // values for SendInput
         public const int INPUT_MOUSE = 0;
@@ -198,6 +199,12 @@ namespace CommonizerRuler
         [DllImport("user32")]
         private static extern bool GetCursorPos(out POINT lpPoint);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nInputs">The number of structures in the pInputs array.</param>
+        /// <param name="pInputs">An array of INPUT structures. Each structure represents an event to be inserted into the keyboard or mouse input stream.</param>
+        /// <param name="cbsize">The size, in bytes, of an INPUT structure. If cbSize is not the size of an INPUT structure, the function fails.</param>
         [DllImport("user32")]
         private static extern void SendInput(int nInputs, ref INPUT pInputs, int cbsize);
 
@@ -246,10 +253,6 @@ namespace CommonizerRuler
             }
         }*/
 
-        /// <summary>
-        /// マルチモニタにも対応したいなぁ
-        /// </summary>
-        /// <returns></returns>
         public static Point GetInternalWindowSize(out int state)
         {
             int enum_current_settings = -1;
@@ -305,6 +308,80 @@ namespace CommonizerRuler
                 return lpPoint;
             else
                 return new Point(int.MaxValue, int.MaxValue); // return a invalid number which represents infinity.
+        }
+
+        /// <summary>
+        /// 左、右、中央のマウスを押し下げる
+        /// </summary>
+        /// <param name="number"></param>
+        public static int SetMouseButtonDown(int number)
+        {
+            var pos = GetCursorPos(out bool succeed);
+            if (!succeed)
+            {
+                return -1; // 失敗ステート
+            }
+            var input = new INPUT
+            {
+                type = INPUT_MOUSE,
+                ui = new INPUT_UNION
+                {
+                    mouse = new MOUSEINPUT
+                    {
+                        dwFlags = number switch
+                        {
+                            0 => MOUSEEVENTF_LEFTDOWN,
+                            1 => MOUSEEVENTF_RIGHTDOWN,
+                            2 => MOUSEEVENTF_MIDDLEDOWN,
+                            _ => throw new NotImplementedException() // Other number can't be allowed.
+                        },
+                        dx = pos.X,
+                        dy = pos.Y,
+                        mouseData = 0,
+                        dwExtraInfo = IntPtr.Zero,
+                        time = 0
+                    }
+                }
+            };
+            SendInput(2, ref input, Marshal.SizeOf(input));
+            return 0; // 成功ステート
+        }
+
+        /// <summary>
+        /// 左、右、中央のマウスを押し下げる
+        /// </summary>
+        /// <param name="number"></param>
+        public static int SetMouseButtonUp(int number)
+        {
+            var pos = GetCursorPos(out bool succeed);
+            if (!succeed)
+            {
+                return -1; // 失敗ステート
+            }
+            var input = new INPUT
+            {
+                type = INPUT_MOUSE,
+                ui = new INPUT_UNION
+                {
+                    mouse = new MOUSEINPUT
+                    {
+                        dwFlags = number switch
+                        {
+                            0 => MOUSEEVENTF_LEFTUP,
+                            1 => MOUSEEVENTF_RIGHTUP,
+                            2 => MOUSEEVENTF_MIDDLEUP,
+                            _ => throw new NotImplementedException() // Other number can't be allowed.
+                        },
+                        dx = pos.X,
+                        dy = pos.Y,
+                        mouseData = 0,
+                        dwExtraInfo = IntPtr.Zero,
+                        time = 0
+                    }
+                }
+            };
+            SendInput(2, ref input, Marshal.SizeOf(input));
+            return 0; // 成功ステート
         }
 
         /*

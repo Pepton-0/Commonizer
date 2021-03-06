@@ -104,9 +104,12 @@ namespace CommonizerRuler
                             new JProperty("y", position.Y),
                             new JProperty("size_x", size.X),
                             new JProperty("size_y", size.Y))).ToString();
-                case "left_down":
-
-                    break;
+                case "mouse_down":
+                    var state1 = WinInterface.SetMouseButtonDown(data["number"].Value<int>());
+                    return new JProperty("result state", state1).ToString();
+                case "mouse_up":
+                    var state2 = WinInterface.SetMouseButtonUp(data["number"].Value<int>());
+                    return new JProperty("result state", state2).ToString();
                 case "exit":
                     return "exit!";
                 default:

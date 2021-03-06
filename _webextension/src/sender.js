@@ -55,7 +55,7 @@ if (window.location.pathname.indexOf("/join") == 0) {
 	};
 }
 else {
-	console.warn("The curren page is not for the sender.");
+	console.log("The curren page is not for the sender.");
 }
 
 function activateSender() {
@@ -63,28 +63,51 @@ function activateSender() {
 
 	screenElement.addEventListener("mousedown", (e) => {
 		console.log("mouse: down @" + e.clientX + ":" + e.clientY);
+		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
+			var button = e.button ? e.button : 0; // 中身からの場合もあるので、確認しておく
+			const message = JSON.stringify({
+				"type": "mouse_down",
+				"control": {
+					"number": button
+				}
+			});
+			remoteInputChannel.send(message);
+		}
+	});
+
+	screenElement.addEventListener("mouseup", (e) => {
+		console.log("mouse: up @" + e.clientX + ":" + e.clientY);
+		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
+			var button = e.button ? e.butotn : 0;
+			const message = JSON.stringify({
+				"type": "mouse_up",
+				"control": {
+					"number": button
+				}
+			});
+			remoteInputChannel.send(message);
+		}
 	});
 
 	// こちらが動かしているときだけ、あちらのマウスの座標は変更される. あちらの人も自分で操作したい時があるだろうから.
 	screenElement.addEventListener("mousemove", (e) => {
-		if (mousePosChannel && mousePosChannel.readyState == "open") {
-			// TODO yRatioが、本来より+0.5だけずれてる.
+		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			let xRatio = e.clientX / screenElement.clientWidth;
 			xRatio = Math.max(Math.min(Math.abs(xRatio), 1), 0);
 			let yRatio = e.clientY / screenElement.clientHeight;
 			yRatio = Math.max(Math.min(Math.abs(yRatio - 0.5), 1), 0);
-			console.log("mouse moved. @" + xRatio.toFixed(2) + ":" + yRatio.toFixed(2));
+			console.log("mouse: mv @" + xRatio.toFixed(2) + ":" + yRatio.toFixed(2));
 			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
 				"____type:" + (typeof xRatio) + ":" + (typeof yRatio);
 
 			const message = JSON.stringify({
-				"type": "remote",
+				"type": "mouse_move",
 				"control": {
 					"x_ratio": xRatio,
 					"y_ratio": yRatio
 				}
 			});
-			mousePosChannel.send(message);
+			remoteInputChannel.send(message);
 		}
 	});
 };
@@ -111,7 +134,6 @@ function prepareNewConnectionForSender() {
 	};
 
 	const peer = new RTCPeerConnection(pc_config);
-	// TODO こちらから、コントロール系の情報を送りたいなら、また別のPeerを生成する必要がある
 	peer.onicecandidate = (e) => {
 		if (e.candidate) {
 			console.log("--Found ICE candidate: " + e.candidate);
@@ -156,11 +178,11 @@ function prepareNewConnectionForSender() {
 	}
 
 	// マウスの移動データを送信する準備
-	mousePosChannel = peer.createDataChannel("mouse_pos");
-	mousePosChannel.onopen = function () {
+	remoteInputChannel = peer.createDataChannel("mouse_pos");
+	remoteInputChannel.onopen = function () {
 		console.log("--Mouse position data channel open");
 	};
-	mousePosChannel.onclose = function () {
+	remoteInputChannel.onclose = function () {
 		console.log("--Mouse position data channel close");
 	};
 

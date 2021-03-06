@@ -23,14 +23,32 @@ chrome.runtime.onMessage.addListener(
     }
     else {
       var json = JSON.parse(request);
-      if (json && json["order"] == "set_mouse_ratio") {
-        console.log("Received: set_mouse_ratio");
-        sendResponse();
-        port.postMessage({
-          "order": "set_mouse_ratio",
-          "x_ratio": json["x_ratio"],
-          "y_ratio": json["y_ratio"]
-        });
+      if (json) {
+        if (json["order"] == "set_mouse_ratio") {
+          console.log("Received: set_mouse_ratio");
+          sendResponse();
+          port.postMessage({
+            "order": "set_mouse_ratio",
+            "x_ratio": json["x_ratio"],
+            "y_ratio": json["y_ratio"]
+          });
+        }
+        else if (json["order"] == "mouse_down") {
+          console.log("Received: mouse_down");
+          sendResponse();
+          port.postMessage({
+            "order": "mouse_down",
+            "number": json["number"]
+          });
+        }
+        else if (json["order"] == "mouse_up") {
+          console.log("Received: mouse_down");
+          sendResponse();
+          port.postMessage({
+            "order": "mouse_up",
+            "number": json["number"]
+          });
+        }
       }
     }
     return true;

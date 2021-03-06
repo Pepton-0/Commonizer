@@ -1,5 +1,5 @@
-// TODO 1.x_ratio, y_ratioを読み込み、background.jsに送信できるようにする
-// TODO 2.母のPCで実験できるようにする
+// TODO マウスのクリック動作も共有できるようにする(C#のexeをwebextensionに追加・js部分の作成).
+// TODO 何故amuseがあると上手くいくのかを追及する
 
 console.log("Load owner.js script");
 
@@ -59,9 +59,8 @@ if (window.location.pathname.indexOf("/make") == 0) {
 		await webutilLoader();
 		activateOwner();
 	};
-
 } else {
-	console.warn("The curren page is not for the owner.");
+	console.log("The curren page is not for the owner.");
 }
 
 // Start setup for screen sharing.
@@ -80,11 +79,27 @@ async function activateOwner() {
 
 	// Show the screen for debugging.
 	document.getElementById("debugScreen").srcObject = localStream;
-
 	document.getElementById("testButton").addEventListener("click", (e) => {
+		/*
     const message = JSON.stringify({ type: "ping" });
 		webutil.sendWsMessage(ws, roomId, side, message);
-		console.log("ping!");
+		console.log("ping!");*/
+		const msg0 = JSON.stringify({
+			"order": "set_mouse_ratio",
+			"x_ratio": "0.8",
+			"y_ratio": "0.8"
+		});
+		const msg1 = JSON.stringify({
+			"order": "mouse_down",
+			"number": 0
+		});
+		const msg2 = JSON.stringify({
+			"order": "mouse_up",
+			"number": 0
+		});
+		chrome.runtime.sendMessage(msg0);
+		chrome.runtime.sendMessage(msg1);
+		chrome.runtime.sendMessage(msg2);
 	});
 };
 
@@ -135,21 +150,39 @@ function prepareNewConnectionForOwner() {
 	peer.ondatachannel = function (e) {
 		var receivedChannel = e.channel;
 		console.log("Received some datachannel: " + e.type);
-		receivedChannel.onopen = () => console.log("--Mouse position data channel open");
-		receivedChannel.onclose = () => console.log("--Mouse position data channel close");
+		// TODO 名前が、RemoteInputChannelであるかどうか判断できるようにしたい.
+		receivedChannel.onopen = () => console.log("--Remote input data channel open");
+		receivedChannel.onclose = () => console.log("--Remote input data channel close");
 		receivedChannel.onmessage = function (e) {
-			console.log("--Mouse position update: " + e.data);
+			console.log("--Remote input update: " + e.data);
 			var jsonMsg = JSON.parse(e.data);
-			 switch (jsonMsg["type"]) {
-			 	case "remote":
+			switch (jsonMsg["type"]) {
+				case "mouse_down":
+					chrome.runtime.sendMessage(JSON.stringify({
+						"order": "mouse_down",
+						"number":jsonMsg["control"]["number"]
+					}
+					));
+					break;
+				case "mouse_up":
+					chrome.runtime.sendMessage(JSON.stringify({
+						"order": "mouse_up",
+						"number":jsonMsg["control"]["number"]
+					}
+					));
+					break;
+			 	case "mouse_move":
 					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "set_mouse_ratio",
-						"x_ratio": jsonMsg["control"].x_ratio,
-						"y_ratio": (jsonMsg["control"].y_ratio)
+						"x_ratio": jsonMsg["control"]["x_ratio"],
+						"y_ratio": (jsonMsg["control"]["y_ratio"])
 						}
 					));
-			 		break;
+					break;
+				default:
+					console.log("nothing was done on remote input data channel:" + e.data);
+					break;
 			 }
 		}
 	}
