@@ -94,7 +94,7 @@ function activateSender() {
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			let xRatio = e.offsetX / screenElement.clientWidth;
 			xRatio = Math.max(Math.min(Math.abs(xRatio), 1), 0);
-			let yRatio = e.offsetY / screenElement.clientHeight;
+			let yRatio = e.clientY / screenElement.clientHeight;
 			yRatio = Math.max(Math.min(Math.abs(yRatio - 0.5), 1), 0);
 			console.log("mouse: mv @" + xRatio.toFixed(2) + ":" + yRatio.toFixed(2));
 			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
