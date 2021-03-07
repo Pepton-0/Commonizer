@@ -74,46 +74,59 @@ namespace CommonizerRuler
         private static string ProcessMessage(JObject data)
         {
             var message = data["order"].Value<string>();
-            switch (message)
+            try
             {
-                /*
-                case "test":
-                    //WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
-                    return "test!";
-                case "mouse_pos":
-                    var pos = WinInterface.GetCursorPos(out bool succeed);
-                    var content = new JProperty("positions",
-                        new JObject(
-                            new JProperty("x", pos.X),
-                            new JProperty("y", pos.Y)
-                            ));
-                    return content.ToString();*/
-                case "set_mouse_ratio":
-                    var size = WinInterface.GetInternalWindowSize(out int state);
-                    var x_ratio = float.Parse(data["x_ratio"].Value<string>());
-                    var y_ratio = float.Parse(data["y_ratio"].Value<string>());
-                    var position = new Point(
-                        (int)((float)size.X * (x_ratio)),
-                        (int)((float)size.Y * (y_ratio)));
-                    WinInterface.SetCursorPos(position.X, position.Y);
+                switch (message)
+                {
+                    /*
+                    case "test":
+                        //WinInterface.SetCursorPos(1536, 864); // 2.5分の1, 250%分は、Winの設定項目「ディスプレイ」の「テキスト・アプリ・その他の項目のサイズ 250%」である
+                        return "test!";
+                    case "mouse_pos":
+                        var pos = WinInterface.GetCursorPos(out bool succeed);
+                        var content = new JProperty("positions",
+                            new JObject(
+                                new JProperty("x", pos.X),
+                                new JProperty("y", pos.Y)
+                                ));
+                        return content.ToString();*/
+                    case "set_mouse_ratio":
+                        var size = WinInterface.GetInternalWindowSize(out int state);
+                        var x_ratio = float.Parse(data["x_ratio"].Value<string>());
+                        var y_ratio = float.Parse(data["y_ratio"].Value<string>());
+                        var position = new Point(
+                            (int)((float)size.X * (x_ratio)),
+                            (int)((float)size.Y * (y_ratio)));
+                        WinInterface.SetCursorPos(position.X, position.Y);
 
-                    return new JProperty("positions",
-                        new JObject(
-                            new JProperty("state", state),
-                            new JProperty("x", position.X),
-                            new JProperty("y", position.Y),
-                            new JProperty("size_x", size.X),
-                            new JProperty("size_y", size.Y))).ToString();
-                case "mouse_down":
-                    var state1 = WinInterface.SetMouseButtonDown(data["number"].Value<int>());
-                    return new JProperty("result state", state1).ToString();
-                case "mouse_up":
-                    var state2 = WinInterface.SetMouseButtonUp(data["number"].Value<int>());
-                    return new JProperty("result state", state2).ToString();
-                case "exit":
-                    return "exit!";
-                default:
-                    return "echo: " + message;
+                        return new JProperty("positions",
+                            new JObject(
+                                new JProperty("state", state),
+                                new JProperty("x", position.X),
+                                new JProperty("y", position.Y),
+                                new JProperty("size_x", size.X),
+                                new JProperty("size_y", size.Y))).ToString();
+                    case "mouse_down":
+                        var state1 = WinInterface.SetMouseButtonDown(data["number"].Value<int>());
+                        return new JProperty("result state", state1).ToString();
+                    case "mouse_up":
+                        var state2 = WinInterface.SetMouseButtonUp(data["number"].Value<int>());
+                        return new JProperty("result state", state2).ToString();
+                    case "key_down":
+                        var state3 = WinInterface.SetKeyDown(data["keycode"].Value<int>());
+                        return new JProperty("result state", state3).ToString();
+                    case "key_up":
+                        var state4 = WinInterface.SetKeyUp(data["keycode"].Value<int>());
+                        return new JProperty("result state", state4).ToString();
+                    case "exit":
+                        return "exit!";
+                    default:
+                        return "echo: " + message;
+                }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
             }
         }
 

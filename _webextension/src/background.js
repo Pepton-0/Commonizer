@@ -7,13 +7,13 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     console.log("received something");
     if (request == "background_calling_test") {
-      console.log("Received: background_calling_test");
-      console.log(request);
-      console.log(sender);
+      console.log("--Received: background_calling_test");
+      console.log("--"+request);
+      console.log("--"+sender);
       sendResponse();
-      console.log("try sending: contentextension_calling_response");
+      console.log("--try sending: contentextension_calling_response");
       chrome.tabs.sendMessage(sender.tab.id,"contentextension_calling_response");
-      console.log("Try sending native message");
+      console.log("--Try sending native message");
 
       port.postMessage({
         "order": "set_mouse_ratio",
@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener(
       var json = JSON.parse(request);
       if (json) {
         if (json["order"] == "set_mouse_ratio") {
-          console.log("Received: set_mouse_ratio");
+          console.log("--Received: set_mouse_ratio");
           sendResponse();
           port.postMessage({
             "order": "set_mouse_ratio",
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(
           });
         }
         else if (json["order"] == "mouse_down") {
-          console.log("Received: mouse_down");
+          console.log("--Received: mouse_down");
           sendResponse();
           port.postMessage({
             "order": "mouse_down",
@@ -42,11 +42,27 @@ chrome.runtime.onMessage.addListener(
           });
         }
         else if (json["order"] == "mouse_up") {
-          console.log("Received: mouse_down");
+          console.log("--Received: mouse_down");
           sendResponse();
           port.postMessage({
             "order": "mouse_up",
             "number": json["number"]
+          });
+        }
+        else if (json["order"] == "key_down") {
+          console.log("--Received: key_down");
+          sendResponse();
+          port.postMessage({
+            "order": "key_down",
+            "keycode":json["keycode"]
+          });
+        }
+        else if (json["order"] == "key_up") {
+          console.log("--Received: key_up");
+          sendResponse();
+          port.postMessage({
+            "order": "key_up",
+            "keycode":json["keycode"]
           });
         }
       }
@@ -56,6 +72,6 @@ chrome.runtime.onMessage.addListener(
 );
 
 port.onMessage.addListener((response) => {
-  console.log("Received: " + response);
-  console.log("Received JSON: " + JSON.stringify(response));
+  console.log("--Received: " + response);
+  console.log("--Received JSON: " + JSON.stringify(response));
 });

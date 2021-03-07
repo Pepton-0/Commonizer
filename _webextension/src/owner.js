@@ -1,8 +1,9 @@
 // TODO 何故amuseがあると上手くいくのかを追及する
-// TODO マウスの共有位置がずれているのを解決する(yが0.04ほどずれてる.HTMLのoffestか)
+// TODO キーボードを共有できるようにする
 // TODO マウスキーの詳細を、jsでの詳細について調べる()
 // TODO mouseup時のマウスボタンが取得できない->ネイティブプログラムで聞くようにするか？
-// TODO 拡張機能の実行について、ユーザー名に全角や記号が入っているものは、エラーが起きた。どの文字が影響しているかは不明。全角スペースはありそう。
+// TODO 拡張機能の実行について、ユーザー名に半角スペースや記号が入っているものは、エラーが起きた。(ただのタイプミス？)
+// TODO 滑らかなmouse移動をしたい. ネイティブ側で、通信ごとのマウス位置を補完・クリック時には、テレポートするようにすれば？
 
 console.log("Load owner.js script");
 
@@ -186,6 +187,22 @@ function prepareNewConnectionForOwner() {
 						}
 					));
 					break;
+				case "key_down":
+					chrome.runtime.sendMessage(JSON.stringify(
+						{
+						"order": "key_down",
+							"keycode": jsonMsg["control"]["keycode"]
+						}
+					));
+					break;
+				case "key_up":
+					chrome.runtime.sendMessage(JSON.stringify(
+						{
+						"order": "key_up",
+							"keycode": jsonMsg["control"]["keycode"]
+						}
+					));
+					break;
 				default:
 					console.log("nothing was done on remote input data channel:" + e.data);
 					break;
@@ -193,7 +210,6 @@ function prepareNewConnectionForOwner() {
 		}
 	}
 
-	// TODO なんか、これがあったらmouseの通信が上手くいった.理由は分からん.
 	var amuse = peer.createDataChannel("amuse");
 	amuse.onopen = (e) => console.log("amuse open: " + e);
 	amuse.onclose = (e) => console.log("amuse close:" + e);

@@ -107,8 +107,34 @@ function activateSender() {
 					"y_ratio": yRatio
 				}
 			});
-			remoteInputChannel.send(message);
+			// TODO 現在実験の為停止中
+			// remoteInputChannel.send(message);
 		}
+	});
+
+	let keycode = null;
+	document.addEventListener("keydown", (e) => {
+		keycode = e.keyCode;
+		const message = JSON.stringify({
+			"type": "key_down",
+			"control": {
+				"keycode": keycode
+			}
+		})
+		console.log("key: dn @" + keycode);
+		remoteInputChannel.send(message);
+	});
+
+	document.addEventListener("keyup", (e) => {
+		// var keycode = e.keyCode;
+		const message = JSON.stringify({
+			"type": "key_up",
+			"control": {
+				"keycode": keycode
+			}
+		})
+		console.log("key: up @" + keycode);
+		remoteInputChannel.send(message);
 	});
 };
 

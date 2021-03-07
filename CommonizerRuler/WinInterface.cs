@@ -203,10 +203,22 @@ namespace CommonizerRuler
         /// 
         /// </summary>
         /// <param name="nInputs">The number of structures in the pInputs array.</param>
-        /// <param name="pInputs">An array of INPUT structures. Each structure represents an event to be inserted into the keyboard or mouse input stream.</param>
-        /// <param name="cbsize">The size, in bytes, of an INPUT structure. If cbSize is not the size of an INPUT structure, the function fails.</param>
+        /// <param name="pInputs">An array of INPUT structures. 
+        /// Each structure represents 
+        /// an event to be inserted into the keyboard or mouse input stream.</param>
+        /// <param name="cbsize">The size, in bytes, of an INPUT structure. 
+        /// If cbSize is not the size of an INPUT structure, the function fails.</param>
         [DllImport("user32")]
         private static extern void SendInput(int nInputs, ref INPUT pInputs, int cbsize);
+
+        /// <summary>
+        /// 仮想キーコードをスキャンコードに変換
+        /// </summary>
+        /// <param name="wCode"></param>
+        /// <param name="wMapType"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll", EntryPoint = "MapVirtualKeyA")]
+        private extern static int MapVirtualKey(int wCode, int wMapType);
 
         /// <summary>
         /// Get display settings
@@ -306,8 +318,8 @@ namespace CommonizerRuler
 
             if (succeed)
                 return lpPoint;
-            else
-                return new Point(int.MaxValue, int.MaxValue); // return a invalid number which represents infinity.
+            else // return inifity which represents an invalid number.
+                return new Point(int.MaxValue, int.MaxValue); 
         }
 
         /// <summary>
@@ -389,11 +401,71 @@ namespace CommonizerRuler
                         }
                     }
                 };
-                SendInput(2, ref input, Marshal.SizeOf(input));
+                SendInput(1, ref input, Marshal.SizeOf(input)); // TODO 1->2の方へ戻した方がいいのかな？
                 return 0; // 成功ステート
             }catch(Exception)
             {
                 return -2;// 例外発生ステート
+            }
+        }
+
+        public static int SetKeyDown(int keyCode)
+        {
+            try
+            {
+                short shortKeyCode = (short)keyCode;
+
+                var input = new INPUT
+                {
+                    type = INPUT_KEYBOARD,
+                    ui = new INPUT_UNION
+                    {
+                        keyboard = new KEYBDINPUT
+                        {
+                            wVk = shortKeyCode,
+                            wScan = (short)MapVirtualKey(shortKeyCode, 0),
+                            dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYDOWN,
+                            dwExtraInfo = IntPtr.Zero,
+                            time = 0,
+                        }
+                    }
+                };
+                SendInput(1, ref input, Marshal.SizeOf(input));
+                return 0; // 成功ステート
+            }
+            catch (Exception)
+            {
+                return -2; // 例外ステート
+            }
+        }
+
+        public static int SetKeyUp(int keyCode)
+        {
+            try
+            {
+                short shortKeyCode = (short)keyCode;
+
+                var input = new INPUT
+                {
+                    type = INPUT_KEYBOARD,
+                    ui = new INPUT_UNION
+                    {
+                        keyboard = new KEYBDINPUT
+                        {
+                            wVk = shortKeyCode,
+                            wScan = (short)MapVirtualKey(shortKeyCode, 0),
+                            dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,
+                            dwExtraInfo = IntPtr.Zero,
+                            time = 0,
+                        }
+                    }
+                };
+                SendInput(1, ref input, Marshal.SizeOf(input));
+                return 0; // 成功ステート
+            }
+            catch (Exception)
+            {
+                return -2; // 例外ステート
             }
         }
 
