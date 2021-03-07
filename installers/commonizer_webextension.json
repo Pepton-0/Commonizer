@@ -1,0 +1,10 @@
+{
+    "name": "commonizer_webextension",
+    "description": "Native Test",
+    "path": "C:\/Users\/USERNAME\/Desktop\/Commonizer\/_webextension\/netcoreapp\/CommonizerRuler.exe",
+    "type": "stdio",
+    "allowed_extensions": [ "Commonizer" ],
+    "allowed_origins": [
+        "chrome-extension:\/\/EXTENSION_ID\/"
+    ]
+}
