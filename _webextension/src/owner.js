@@ -1,6 +1,7 @@
 // TODO 何故amuseがあると上手くいくのかを追及する
 // TODO マウスの共有位置がずれているのを解決する(yが0.04ほどずれてる.HTMLのoffestか)
-// TODO マウスキーの詳細を、jsでの詳細について調べる
+// TODO マウスキーの詳細を、jsでの詳細について調べる()
+// TODO mouseup時のマウスボタンが取得できない->ネイティブプログラムで聞くようにするか？
 
 console.log("Load owner.js script");
 
@@ -79,8 +80,11 @@ async function activateOwner() {
 	}
 
 	// Show the screen for debugging.
-	document.getElementById("debugScreen").srcObject = localStream;
-	document.getElementById("testButton").addEventListener("click", (e) => {
+	var debugScreen = document.getElementById("debugScreen");
+	debugScreen.srcObject = localStream;
+
+	testButton = document.getElementById("testButton");
+	testButton.addEventListener("click", (e) => {
 		/*
     const message = JSON.stringify({ type: "ping" });
 		webutil.sendWsMessage(ws, roomId, side, message);
@@ -188,7 +192,7 @@ function prepareNewConnectionForOwner() {
 		}
 	}
 
-	//TODO なんか、これがあったらmouseの通信が上手くいった.理由は分からん.
+	// TODO なんか、これがあったらmouseの通信が上手くいった.理由は分からん.
 	var amuse = peer.createDataChannel("amuse");
 	amuse.onopen = (e) => console.log("amuse open: " + e);
 	amuse.onclose = (e) => console.log("amuse close:" + e);

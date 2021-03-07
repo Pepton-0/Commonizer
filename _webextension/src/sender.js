@@ -76,7 +76,7 @@ function activateSender() {
 	});
 
 	screenElement.addEventListener("mouseup", (e) => {
-		console.log("mouse: up @" + e.clientX + ":" + e.clientY);
+		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + e.buttons);
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			var button = e.button ? e.butotn : 0;
 			const message = JSON.stringify({
