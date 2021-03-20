@@ -50,6 +50,7 @@ if (window.location.pathname.indexOf("/join") == 0) {
 				}
 			};
 		};
+		console.log("Load webutil");
 		await webutilLoader();
 		activateSender();
 	};

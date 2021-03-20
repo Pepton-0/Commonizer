@@ -14,11 +14,14 @@ let negotiationneededCounter = 0;
 if (window.location.pathname.indexOf("/make") == 0) {
 	window.onload = async function () {
 		side = "owner";
-		console.log(window.roomId);
 		roomId = document.getElementById("roomId").value;
+		console.log("Roomid: " + roomId);
 		const webutilLoader = async () => {
+			console.log("Begin webutil loader");
 			const src = chrome.runtime.getURL("webutil.js");
+			console.log("Got src");
 			webutil = await import(src);
+			console.log("Imported webutil");
 			ws = webutil.prepareWebSocket(side);
 			ws.onopen = (e) => {
 				webutil.sendWsMessage(ws, roomId, side, "registry");
@@ -61,6 +64,7 @@ if (window.location.pathname.indexOf("/make") == 0) {
 				}
 			};
 		};
+		console.log("Load webutil");
 		await webutilLoader();
 		activateOwner();
 	};
