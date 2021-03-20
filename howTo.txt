@@ -24,4 +24,4 @@ Herokuへのアップロード方法
 
     signalingサーバー(commonizer0signaling):
         1. heroku git:remote -a commonizer0signaling
-        2. git push heroku master -f (新たにgitプロジェクトを作る必要がありそう, -f:は強制変更)
+        2. git push heroku master -f (新たにgitプロジェクトを作る必要がありそう, -f:は強制変更という意味)
