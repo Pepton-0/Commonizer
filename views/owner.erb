@@ -19,7 +19,9 @@
   </header>
   <br>
   <div class="inputarea">
-    <div><font size="32">id=<%=@room_id%></font></div>
+    <div>
+      <font size="32">id=<%=@room_id%></font>
+    </div>
       <font size="32">STATUS=</font>
       <font color="green" size="32" id="status">NONE</font>
     </div>
@@ -28,9 +30,9 @@
       <video id="debugScreen" width="284" height="160" class="screen" autoplay playsinline muted loop poster="/earth-preloader.gif"></video>
     </div>
     <div>
-      <button><font size="32">Exit</font></button>
+      <button id="exitButton"><font size="32">Exit</font></button>
+      <button id="testButton">TEST</button>
     </div>
-    <button id="testButton">TEST</button>
   </div>
 </body>
 </html>

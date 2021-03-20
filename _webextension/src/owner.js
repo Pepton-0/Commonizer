@@ -84,10 +84,21 @@ async function activateOwner() {
 	}
 
 	// Show the screen for debugging.
-	var debugScreen = document.getElementById("debugScreen");
+	let debugScreen = document.getElementById("debugScreen");
 	debugScreen.srcObject = localStream;
 
-	var listenerActive = true;
+	let exitButton = document.getElementById("exitButton");
+	exitButton.addEventListener("click", (e) => {
+		if (ws) {
+			ws.close();
+		}
+		if (peerConnection) {
+			peerConnection.close();
+		}
+		window.location.href = "/chooser";
+	});
+
+	let listenerActive = true;
 	testButton = document.getElementById("testButton");
 	testButton.addEventListener("click", (e) => {
 		let func = () => {

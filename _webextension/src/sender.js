@@ -63,7 +63,7 @@ function activateSender() {
 
 	screenElement.addEventListener("mousedown", (e) => {
 		var button = e.button ? e.button : 0; // 中身が空の場合もあるので、確認しておく
-		console.log("mouse: down @" + e.clientX + ":" + e.clientY + "["+button+"]");
+		console.log("mouse: down @" + e.clientX + ":" + e.clientY + "[" + button + "]");
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			const message = JSON.stringify({
 				"type": "mouse_down",
@@ -77,7 +77,7 @@ function activateSender() {
 
 	screenElement.addEventListener("mouseup", (e) => {
 		var button = e.button ? e.button : 0;
-		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + "["+button+"]");
+		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + "[" + button + "]");
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			const message = JSON.stringify({
 				"type": "mouse_up",
@@ -91,13 +91,13 @@ function activateSender() {
 
 	// こちらが動かしているときだけ、あちらのマウスの座標は変更される. あちらの人も自分で操作したい時があるだろうから.
 	screenElement.addEventListener("mousemove", (e) => {
-		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
-			let xRatio = e.offsetX / screenElement.clientWidth;
-			xRatio = Math.max(Math.min(Math.abs(xRatio), 1), 0);
-			let yRatio = e.offsetY / screenElement.clientHeight;
-			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
-				"____type:" + (typeof xRatio) + ":" + (typeof yRatio);
+		let xRatio = e.offsetX / screenElement.clientWidth;
+		xRatio = Math.max(Math.min(Math.abs(xRatio), 1), 0);
+		let yRatio = e.offsetY / screenElement.clientHeight;
+		senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
+			"____type:" + (typeof xRatio) + ":" + (typeof yRatio);
 
+		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			const message = JSON.stringify({
 				"type": "mouse_move",
 				"control": {
@@ -112,37 +112,50 @@ function activateSender() {
 	});
 
 	document.addEventListener("keydown", (e) => {
-		const message = JSON.stringify({
-			"type": "key_down",
-			"control": {
-				"keycode": e.keyCode
-			}
-		})
-		console.log("key:down@" + e.keyCode);
-		remoteInputChannel.send(message);
+		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
+			const message = JSON.stringify({
+				"type": "key_down",
+				"control": {
+					"keycode": e.keyCode
+				}
+			})
+			console.log("key:down@" + e.keyCode);
+			remoteInputChannel.send(message);
+		}
 	});
 
 	document.addEventListener("keyup", (e) => {
-		const message = JSON.stringify({
-			"type": "key_up",
-			"control": {
-				"keycode": e.keyCode
-			}
-		})
-		console.log("key: up @" + e.keyCode);
-		remoteInputChannel.send(message);
+		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
+			const message = JSON.stringify({
+				"type": "key_up",
+				"control": {
+					"keycode": e.keyCode
+				}
+			})
+			console.log("key: up @" + e.keyCode);
+			remoteInputChannel.send(message);
+		}
+	});
+
+	let exitButton = document.getElementById("exitButton");
+	exitButton.addEventListener("click", (e) => {
+		if (ws) {
+			ws.close();
+		}
+		if (peerConnection) {
+			peerConnection.close();
+		}
+		window.location.href = "/chooser";
 	});
 };
 
 function hangUpSender() {
-	if (peerConnection) {
-		if (peerConnection.iceConnectionState !== "closed") {
-			peerConnection.close();
-			peerConnection = null;
-			const message = JSON.stringify({ type: "close" });
-			console.log("Send close message to signaling server");
-			webutil.sendWsMessage(ws, roomId, side, message);
-		}
+	if (peerConnection && peerConnection.iceConnectionState !== "closed") {
+		peerConnection.close();
+		peerConnection = null;
+		const message = JSON.stringify({ type: "close" });
+		console.log("Send close message to signaling server");
+		webutil.sendWsMessage(ws, roomId, side, message);
 	}
 	webutil.goErrorPage();
 }
