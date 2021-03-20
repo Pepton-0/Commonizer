@@ -61,6 +61,17 @@ else {
 function activateSender() {
 	console.log("sender.js has activated.\nThe room id is: " + window.roomId);
 
+	let exitButton = document.getElementById("exitButton");
+	exitButton.addEventListener("click", (e) => {
+		if (ws) {
+			ws.close();
+		}
+		if (peerConnection) {
+			peerConnection.close();
+		}
+		window.location.href = "/chooser";
+	});
+
 	screenElement.addEventListener("mousedown", (e) => {
 		var button = e.button ? e.button : 0; // 中身が空の場合もあるので、確認しておく
 		console.log("mouse: down @" + e.clientX + ":" + e.clientY + "[" + button + "]");
@@ -111,7 +122,11 @@ function activateSender() {
 		window.onresize = resizeScreenElement;
 	});
 
-	document.addEventListener("keydown", (e) => {
+	document.onscroll = (e) => {
+		return false;
+	}
+
+	document.onkeydown = (e) => {
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			const message = JSON.stringify({
 				"type": "key_down",
@@ -122,9 +137,9 @@ function activateSender() {
 			console.log("key:down@" + e.keyCode);
 			remoteInputChannel.send(message);
 		}
-	});
+	};
 
-	document.addEventListener("keyup", (e) => {
+	document.onkeyup = (e) => {
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			const message = JSON.stringify({
 				"type": "key_up",
@@ -135,18 +150,7 @@ function activateSender() {
 			console.log("key: up @" + e.keyCode);
 			remoteInputChannel.send(message);
 		}
-	});
-
-	let exitButton = document.getElementById("exitButton");
-	exitButton.addEventListener("click", (e) => {
-		if (ws) {
-			ws.close();
-		}
-		if (peerConnection) {
-			peerConnection.close();
-		}
-		window.location.href = "/chooser";
-	});
+	};
 };
 
 function hangUpSender() {

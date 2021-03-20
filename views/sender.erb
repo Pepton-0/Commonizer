@@ -14,13 +14,12 @@
   <body oncontextmenu="return false;">
     <!-- Global variables /!-->
     <input type="hidden" id="roomId" value="<%=@room_id%>">
-    <header>
-      <font size="32">Sender </font><%= @room_id %>
-    </header>
+    <div>
+      <font size="32">Sender </font>
+      <button id="exitButton"><font size="32">Exit</font></button>
+    </div>
     <br>
     <div>
-      MENU
-      <br>
       <div id="debugConsole"></div>
     </div>
     <div>
@@ -29,8 +28,7 @@
       </video>
     </div>
     <div>
-      <textarea name="" id="" cols="40" rows="5"></textarea><br>
-      <button id="exitButton"><font size="32">Exit</font></button>
+      <textarea name="" id="" cols="40" rows="5"></textarea>
     </div>
   </body>
 </html>

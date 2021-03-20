@@ -72,6 +72,17 @@ if (window.location.pathname.indexOf("/make") == 0) {
 async function activateOwner() {
 	console.log("owner.js has activated.\nThe room id is: " + roomId);
 
+	let exitButton = document.getElementById("exitButton");
+	exitButton.addEventListener("click", (e) => {
+		if (ws) {
+			ws.close();
+		}
+		if (peerConnection) {
+			peerConnection.close();
+		}
+		window.location.href = "/chooser";
+	});
+
 	// Prepare the screen which will be shared.
 	try {
 		localStream = await navigator.mediaDevices.getDisplayMedia({
@@ -86,17 +97,6 @@ async function activateOwner() {
 	// Show the screen for debugging.
 	let debugScreen = document.getElementById("debugScreen");
 	debugScreen.srcObject = localStream;
-
-	let exitButton = document.getElementById("exitButton");
-	exitButton.addEventListener("click", (e) => {
-		if (ws) {
-			ws.close();
-		}
-		if (peerConnection) {
-			peerConnection.close();
-		}
-		window.location.href = "/chooser";
-	});
 
 	let listenerActive = true;
 	testButton = document.getElementById("testButton");
