@@ -37,7 +37,7 @@ get '/chrome_extension_download' do
 end
 
 post '/make' do
-  @room_id = SecureRandom.hex(10)
+  @room_id = SecureRandom.hex(6)
   erb :owner
 end
 

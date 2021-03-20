@@ -1,12 +1,10 @@
 // TODO 何故amuseがあると上手くいくのかを追及する
 // TODO インストーラー作成:(.NETCore, registry, commonizer_webextensionで、拡張機能IDを登録・exeのpath設定)
 // firefox用を作ろう.
-// TODO マウスの動きが少し遅い？
-// TODO mouseup時のマウスボタンが取得できない->ネイティブプログラムで聞くようにするか？
 // TODO 拡張機能の実行について、ユーザー名に半角スペースや記号が入っているものは、エラーが起きた。(ただのタイプミス？)
 // TODO 滑らかなmouse移動をしたい. ネイティブ側で、通信ごとのマウス位置を補完・クリック時には、テレポートするようにすれば？
 // TODO senderで、e.keyCodeが非推奨となっている
-// TODO 簡単なSenderのアクセス方法がほしい(QRコード、URLをメール等に送信)
+// TODO 簡単なSenderのアクセス方法がほしい(QRコード、URLをメール等に送信) -> とりあえず6文字にした
 
 console.log("Load owner.js script");
 
@@ -82,6 +80,7 @@ async function activateOwner() {
 		console.log("Suceeded to acquire screen capture permission");
 	} catch (err) {
 		webutil.goErrorPage("Failed to acquire screen capture permission");
+		return;
 	}
 
 	// Show the screen for debugging.

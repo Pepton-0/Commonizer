@@ -1,6 +1,7 @@
 console.log("Load sender.js script");
 
 let screenElement = null;
+let screenElementRatio = 0.5; // width / height
 let senderDebugElement = null;
 
 if (window.location.pathname.indexOf("/join") == 0) {
@@ -28,7 +29,6 @@ if (window.location.pathname.indexOf("/join") == 0) {
 					case "candidate": {
 						console.log("Received ICE candidate ...");
 						const candidate = new RTCIceCandidate(message.ice);
-						console.log("  Info: " + candidate.toString().substr(0, 25) + "...");
 						addIceCandidateForSender(candidate);
 						break;
 					}
@@ -71,13 +71,13 @@ function activateSender() {
 					"number": button
 				}
 			});
-			// remoteInputChannel.send(message);
+			remoteInputChannel.send(message);
 		}
 	});
 
 	screenElement.addEventListener("mouseup", (e) => {
 		var button = e.button ? e.button : 0;
-		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + e.buttons + "["+button+"]");
+		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + "["+button+"]");
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
 			const message = JSON.stringify({
 				"type": "mouse_up",
@@ -85,7 +85,7 @@ function activateSender() {
 					"number": button
 				}
 			});
-			// remoteInputChannel.send(message);
+			remoteInputChannel.send(message);
 		}
 	});
 
@@ -105,9 +105,10 @@ function activateSender() {
 					"y_ratio": yRatio
 				}
 			});
-			// TODO 現在実験の為停止中
-			// remoteInputChannel.send(message);
+			remoteInputChannel.send(message);
 		}
+
+		window.onresize = resizeScreenElement;
 	});
 
 	document.addEventListener("keydown", (e) => {
@@ -118,7 +119,7 @@ function activateSender() {
 			}
 		})
 		console.log("key:down@" + e.keyCode);
-		//remoteInputChannel.send(message);
+		remoteInputChannel.send(message);
 	});
 
 	document.addEventListener("keyup", (e) => {
@@ -129,7 +130,7 @@ function activateSender() {
 			}
 		})
 		console.log("key: up @" + e.keyCode);
-		//remoteInputChannel.send(message);
+		remoteInputChannel.send(message);
 	});
 };
 
@@ -183,12 +184,21 @@ function prepareNewConnectionForSender() {
 	// リモートのMediaStreamTrackを受信した時
 	peer.ontrack = async (evt) => {
 		console.log("--peer.ontrack()");
+		let mediaStream = evt.streams[0];
 		screenElement.srcObject = evt.streams[0];
 		try {
 			await screenElement.play();
 		} catch (error) {
 			console.log("--Error auto play:" + error);
 		}
+		var isFirst = true;
+		screenElement.addEventListener("resize", (e) => {
+			if (isFirst) {
+				screenElementRatio = mediaStream.getVideoTracks()[0].getSettings().aspectRatio;
+				isFirst = false;
+				resizeScreenElement();
+			}
+		});
 	};
 
 	peer.ondatachannel = function (e) {
@@ -250,7 +260,6 @@ function sendIceCandidateAsSender(candidate) {
 	console.log("--==Send ICE candidate");
 	const message =
 		JSON.stringify({ type: "candidate", ice: candidate });
-	console.log("--==Sending candidate=" + message);
 	webutil.sendWsMessage(ws, roomId, side, message);
 }
 
@@ -269,5 +278,24 @@ function sendSdpAsSender(sessionDescription) {
 	console.log("--==Send session description to signaling server");
 	const description = JSON.stringify(sessionDescription);
 	webutil.sendWsMessage(ws, roomId, side, description);
-	console.log("--==Sent SDP: " + description.substr(0, 25) + "...");
+}
+
+function resizeScreenElement() {
+	let newWidth = 10;
+	let newHeight = 10;
+	let minXByHeight = window.innerHeight * 0.85 * screenElementRatio;
+	let minYByWidth = window.innerWidth * 0.85 * (1 / screenElementRatio);
+
+	if (minYByWidth < window.innerHeight) {
+		newHeight = minYByWidth;
+		newWidth = newHeight * screenElementRatio;
+	}
+	else {
+		newWidth = minXByHeight;
+		newHeight = newWidth * (1 / screenElementRatio);
+	}
+
+	screenElement.style.width = newWidth + "px";
+	screenElement.style.height = newHeight + "px";
+	console.log("Resize screen element: " + newWidth + ":" + newHeight);
 }

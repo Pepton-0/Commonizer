@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(
     }
     else {
       var json = JSON.parse(request);
-      if (json) {
+      if (json && false == true) {
         if (json["order"] == "set_mouse_ratio") {
           console.log("--Received: set_mouse_ratio");
           sendResponse();
