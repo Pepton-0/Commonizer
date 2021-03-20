@@ -62,30 +62,30 @@ function activateSender() {
 	console.log("sender.js has activated.\nThe room id is: " + window.roomId);
 
 	screenElement.addEventListener("mousedown", (e) => {
-		console.log("mouse: down @" + e.clientX + ":" + e.clientY);
+		var button = e.button ? e.button : 0; // 中身が空の場合もあるので、確認しておく
+		console.log("mouse: down @" + e.clientX + ":" + e.clientY + "["+button+"]");
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
-			var button = e.button ? e.button : 0; // 中身からの場合もあるので、確認しておく
 			const message = JSON.stringify({
 				"type": "mouse_down",
 				"control": {
 					"number": button
 				}
 			});
-			remoteInputChannel.send(message);
+			// remoteInputChannel.send(message);
 		}
 	});
 
 	screenElement.addEventListener("mouseup", (e) => {
-		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + e.buttons);
+		var button = e.button ? e.button : 0;
+		console.log("mouse: up @" + e.clientX + ":" + e.clientY + ":" + e.buttons + "["+button+"]");
 		if (remoteInputChannel && remoteInputChannel.readyState == "open") {
-			var button = e.button ? e.button : 0;
 			const message = JSON.stringify({
 				"type": "mouse_up",
 				"control": {
 					"number": button
 				}
 			});
-			remoteInputChannel.send(message);
+			// remoteInputChannel.send(message);
 		}
 	});
 
@@ -95,8 +95,6 @@ function activateSender() {
 			let xRatio = e.offsetX / screenElement.clientWidth;
 			xRatio = Math.max(Math.min(Math.abs(xRatio), 1), 0);
 			let yRatio = e.offsetY / screenElement.clientHeight;
-			//yRatio = Math.max(Math.min(Math.abs(yRatio - 0.5), 1), 0);
-			console.log("mouse: mv @" + xRatio.toFixed(2) + ":" + yRatio.toFixed(2));
 			senderDebugElement.innerHTML = "x:" + xRatio.toFixed(2) + ", " + "y:" + yRatio.toFixed(2) +
 				"____type:" + (typeof xRatio) + ":" + (typeof yRatio);
 
@@ -108,7 +106,7 @@ function activateSender() {
 				}
 			});
 			// TODO 現在実験の為停止中
-			remoteInputChannel.send(message);
+			// remoteInputChannel.send(message);
 		}
 	});
 
@@ -119,8 +117,8 @@ function activateSender() {
 				"keycode": e.keyCode
 			}
 		})
-		console.log("key: dn @" + e.keyCode);
-		remoteInputChannel.send(message);
+		console.log("key:down@" + e.keyCode);
+		//remoteInputChannel.send(message);
 	});
 
 	document.addEventListener("keyup", (e) => {
@@ -131,7 +129,7 @@ function activateSender() {
 			}
 		})
 		console.log("key: up @" + e.keyCode);
-		remoteInputChannel.send(message);
+		//remoteInputChannel.send(message);
 	});
 };
 

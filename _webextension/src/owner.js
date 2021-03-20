@@ -19,7 +19,7 @@ if (window.location.pathname.indexOf("/make") == 0) {
 		console.log(window.roomId);
 		roomId = document.getElementById("roomId").value;
 		const webutilLoader = async () => {
-			const src = browser.runtime.getURL("webutil.js");
+			const src = chrome.runtime.getURL("webutil.js");
 			webutil = await import(src);
 			ws = webutil.prepareWebSocket(side);
 			ws.onopen = (e) => {
@@ -88,28 +88,42 @@ async function activateOwner() {
 	var debugScreen = document.getElementById("debugScreen");
 	debugScreen.srcObject = localStream;
 
+	var listenerActive = true;
 	testButton = document.getElementById("testButton");
 	testButton.addEventListener("click", (e) => {
-		/*
-    const message = JSON.stringify({ type: "ping" });
-		webutil.sendWsMessage(ws, roomId, side, message);
-		console.log("ping!");*/
-		const msg0 = JSON.stringify({
-			"order": "set_mouse_ratio",
-			"x_ratio": "0.8",
-			"y_ratio": "0.8"
-		});
-		const msg1 = JSON.stringify({
-			"order": "mouse_down",
-			"number": 0
-		});
-		const msg2 = JSON.stringify({
-			"order": "mouse_up",
-			"number": 0
-		});
-		browser.runtime.sendMessage(msg0);
-		browser.runtime.sendMessage(msg1);
-		browser.runtime.sendMessage(msg2);
+		let func = () => {
+			/*
+			const message = JSON.stringify({ type: "ping" });
+			webutil.sendWsMessage(ws, roomId, side, message);
+			console.log("ping!");*/
+			const msg0 = JSON.stringify({
+				"order": "set_mouse_ratio",
+				"x_ratio": "0.2",
+				"y_ratio": "0.4"
+			});
+			const msg1 = JSON.stringify({
+				"order": "mouse_down",
+				"number": 0
+			});
+			const msg2 = JSON.stringify({
+				"order": "mouse_up",
+				"number": 0
+			});
+			chrome.runtime.sendMessage(msg0);
+			chrome.runtime.sendMessage(msg1);
+			chrome.runtime.sendMessage(msg2);
+		};
+		window.setTimeout(func, 3 * 1000);
+	});
+
+	document.addEventListener("mousedown", (e) => {
+		var button = e.button ? e.button : 0; // 中身が空の場合もあるので、確認しておく
+		console.log("mouse: down @" + "["+button+"]");
+	});
+
+	document.addEventListener("mouseup", (e) => {
+		var button = e.button ? e.button : 0; // 中身が空の場合もあるので、確認しておく
+		console.log("mouse: up @" + "["+button+"]");
 	});
 };
 
@@ -168,21 +182,21 @@ function prepareNewConnectionForOwner() {
 			var jsonMsg = JSON.parse(e.data);
 			switch (jsonMsg["type"]) {
 				case "mouse_down":
-					browser.runtime.sendMessage(JSON.stringify({
+					chrome.runtime.sendMessage(JSON.stringify({
 						"order": "mouse_down",
 						"number": jsonMsg["control"]["number"]
 					}
 					));
 					break;
 				case "mouse_up":
-					browser.runtime.sendMessage(JSON.stringify({
+					chrome.runtime.sendMessage(JSON.stringify({
 						"order": "mouse_up",
 						"number": jsonMsg["control"]["number"]
 					}
 					));
 					break;
 			 	case "mouse_move":
-					browser.runtime.sendMessage(JSON.stringify(
+					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "set_mouse_ratio",
 						"x_ratio": jsonMsg["control"]["x_ratio"],
@@ -191,7 +205,7 @@ function prepareNewConnectionForOwner() {
 					));
 					break;
 				case "key_down":
-					browser.runtime.sendMessage(JSON.stringify(
+					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "key_down",
 							"keycode": jsonMsg["control"]["keycode"]
@@ -199,7 +213,7 @@ function prepareNewConnectionForOwner() {
 					));
 					break;
 				case "key_up":
-					browser.runtime.sendMessage(JSON.stringify(
+					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "key_up",
 							"keycode": jsonMsg["control"]["keycode"]
