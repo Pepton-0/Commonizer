@@ -109,22 +109,23 @@ namespace CommonizerRuler
         };
 
         // values for SendInput
-        public const int INPUT_MOUSE = 0;
-        public const int INPUT_KEYBOARD = 1;
-        public const int INPUT_HARDWARE = 2;
-        public const int MOUSEEVENTF_MOVE = 0x1;
-        public const int MOUSEEVENTF_ABSOLUTE = 0x8000;
-        public const int MOUSEEVENTF_LEFTDOWN = 0x2;
-        public const int MOUSEEVENTF_LEFTUP = 0x4;
-        public const int MOUSEEVENTF_RIGHTDOWN = 0x8;
-        public const int MOUSEEVENTF_RIGHTUP = 0x10;
-        public const int MOUSEEVENTF_MIDDLEDOWN = 0x20;
-        public const int MOUSEEVENTF_MIDDLEUP = 0x40;
-        public const int MOUSEEVENTF_WHEEL = 0x800;
-        public const int WHEEL_DELTA = 120;
-        public const int KEYEVENTF_KEYDOWN = 0x0;
-        public const int KEYEVENTF_KEYUP = 0x2;
-        public const int KEYEVENTF_EXTENDEDKEY = 0x1;
+        const int INPUT_MOUSE = 0;
+        const int INPUT_KEYBOARD = 1;
+        const int INPUT_HARDWARE = 2;
+        const int MOUSEEVENTF_MOVE = 0x0001;
+        const int MOUSEEVENTF_ABSOLUTE = 0x8000;
+        const int MOUSEEVENTF_LEFTDOWN = 0x0002;
+        const int MOUSEEVENTF_LEFTUP = 0x0004;
+        const int MOUSEEVENTF_RIGHTDOWN = 0x8;
+        const int MOUSEEVENTF_RIGHTUP = 0x10;
+        const int MOUSEEVENTF_MIDDLEDOWN = 0x20;
+        const int MOUSEEVENTF_MIDDLEUP = 0x40;
+        const int MOUSEEVENTF_WHEEL = 0x800;
+        const int WHEEL_DELTA = 120;
+        const int KEYEVENTF_KEYDOWN = 0x0;
+        const int KEYEVENTF_KEYUP = 0x2;
+        const int KEYEVENTF_EXTENDEDKEY = 0x1;
+        const int MOUSEEVENTF_VIRTUALDESK = 0x4000;
 
         [DllImport("user32")]
         public static extern int SetCursorPos(int x, int y);
@@ -157,6 +158,9 @@ namespace CommonizerRuler
         [DllImport("user32.dll", EntryPoint = "MapVirtualKeyA")]
         private extern static int MapVirtualKey(int wCode, int wMapType);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        public extern static IntPtr GetMessageExtraInfo();
+
         /// <summary>
         /// Get display settings
         /// </summary>
@@ -174,8 +178,8 @@ namespace CommonizerRuler
             devmode.dmSize = (short)Marshal.SizeOf(devmode);
             bool suceed = EnumDisplaySettings(null, enum_current_settings, ref devmode);
 
-                    state = 3;
-                    return new Point(devmode.dmPelsWidth, devmode.dmPelsHeight);
+            state = 3;
+            return new Point(devmode.dmPelsWidth, devmode.dmPelsHeight);
         }
 
         public static Point GetCursorPos(out bool succeed)
@@ -186,7 +190,7 @@ namespace CommonizerRuler
             if (succeed)
                 return lpPoint;
             else // return inifity which represents an invalid number.
-                return new Point(int.MaxValue, int.MaxValue); 
+                return new Point(int.MaxValue, int.MaxValue);
         }
 
         /// <summary>
@@ -219,12 +223,12 @@ namespace CommonizerRuler
                             dx = pos.X,
                             dy = pos.Y,
                             mouseData = 0,
-                            dwExtraInfo = IntPtr.Zero,
+                            dwExtraInfo = GetMessageExtraInfo(),
                             time = 0
                         }
                     }
                 };
-                SendInput(2, ref input, Marshal.SizeOf(input));
+                SendInput(1, ref input, Marshal.SizeOf(input));
                 return 0; // 成功ステート
             }
             catch (Exception)
@@ -263,14 +267,15 @@ namespace CommonizerRuler
                             dx = pos.X,
                             dy = pos.Y,
                             mouseData = 0,
-                            dwExtraInfo = IntPtr.Zero,
+                            dwExtraInfo = GetMessageExtraInfo(),
                             time = 0
                         }
                     }
                 };
-                SendInput(2, ref input, Marshal.SizeOf(input)); // TODO 1->2の方へ戻した方がいいのかな？
+                SendInput(1, ref input, Marshal.SizeOf(input)); // TODO 1->2の方へ戻した方がいいのかな？
                 return 0; // 成功ステート
-            }catch(Exception)
+            }
+            catch (Exception)
             {
                 return -2;// 例外発生ステート
             }
@@ -292,12 +297,12 @@ namespace CommonizerRuler
                             wVk = shortKeyCode,
                             wScan = (short)MapVirtualKey(shortKeyCode, 0),
                             dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYDOWN,
-                            dwExtraInfo = IntPtr.Zero,
+                            dwExtraInfo = GetMessageExtraInfo(),
                             time = 0,
                         }
                     }
                 };
-                SendInput(2, ref input, Marshal.SizeOf(input));
+                SendInput(1, ref input, Marshal.SizeOf(input));
                 return 0; // 成功ステート
             }
             catch (Exception)
@@ -322,7 +327,7 @@ namespace CommonizerRuler
                             wVk = shortKeyCode,
                             wScan = (short)MapVirtualKey(shortKeyCode, 0),
                             dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,
-                            dwExtraInfo = IntPtr.Zero,
+                            dwExtraInfo = GetMessageExtraInfo(),
                             time = 0,
                         }
                     }
