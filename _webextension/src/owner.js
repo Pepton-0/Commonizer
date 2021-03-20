@@ -1,9 +1,12 @@
 // TODO 何故amuseがあると上手くいくのかを追及する
-// TODO キーボードを共有できるようにする
-// TODO マウスキーの詳細を、jsでの詳細について調べる()
+// TODO インストーラー作成:(.NETCore, registry, commonizer_webextensionで、拡張機能IDを登録・exeのpath設定)
+// firefox用を作ろう.
+// TODO マウスの動きが少し遅い？
 // TODO mouseup時のマウスボタンが取得できない->ネイティブプログラムで聞くようにするか？
 // TODO 拡張機能の実行について、ユーザー名に半角スペースや記号が入っているものは、エラーが起きた。(ただのタイプミス？)
 // TODO 滑らかなmouse移動をしたい. ネイティブ側で、通信ごとのマウス位置を補完・クリック時には、テレポートするようにすれば？
+// TODO senderで、e.keyCodeが非推奨となっている
+// TODO 簡単なSenderのアクセス方法がほしい(QRコード、URLをメール等に送信)
 
 console.log("Load owner.js script");
 
@@ -13,10 +16,10 @@ let negotiationneededCounter = 0;
 if (window.location.pathname.indexOf("/make") == 0) {
 	window.onload = async function () {
 		side = "owner";
-		roomId = document.getElementById("roomId").value;
 		console.log(window.roomId);
+		roomId = document.getElementById("roomId").value;
 		const webutilLoader = async () => {
-			const src = chrome.runtime.getURL("webutil.js");
+			const src = browser.runtime.getURL("webutil.js");
 			webutil = await import(src);
 			ws = webutil.prepareWebSocket(side);
 			ws.onopen = (e) => {
@@ -104,9 +107,9 @@ async function activateOwner() {
 			"order": "mouse_up",
 			"number": 0
 		});
-		chrome.runtime.sendMessage(msg0);
-		chrome.runtime.sendMessage(msg1);
-		chrome.runtime.sendMessage(msg2);
+		browser.runtime.sendMessage(msg0);
+		browser.runtime.sendMessage(msg1);
+		browser.runtime.sendMessage(msg2);
 	});
 };
 
@@ -165,21 +168,21 @@ function prepareNewConnectionForOwner() {
 			var jsonMsg = JSON.parse(e.data);
 			switch (jsonMsg["type"]) {
 				case "mouse_down":
-					chrome.runtime.sendMessage(JSON.stringify({
+					browser.runtime.sendMessage(JSON.stringify({
 						"order": "mouse_down",
-						"number":jsonMsg["control"]["number"]
+						"number": jsonMsg["control"]["number"]
 					}
 					));
 					break;
 				case "mouse_up":
-					chrome.runtime.sendMessage(JSON.stringify({
+					browser.runtime.sendMessage(JSON.stringify({
 						"order": "mouse_up",
-						"number":jsonMsg["control"]["number"]
+						"number": jsonMsg["control"]["number"]
 					}
 					));
 					break;
 			 	case "mouse_move":
-					chrome.runtime.sendMessage(JSON.stringify(
+					browser.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "set_mouse_ratio",
 						"x_ratio": jsonMsg["control"]["x_ratio"],
@@ -188,7 +191,7 @@ function prepareNewConnectionForOwner() {
 					));
 					break;
 				case "key_down":
-					chrome.runtime.sendMessage(JSON.stringify(
+					browser.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "key_down",
 							"keycode": jsonMsg["control"]["keycode"]
@@ -196,7 +199,7 @@ function prepareNewConnectionForOwner() {
 					));
 					break;
 				case "key_up":
-					chrome.runtime.sendMessage(JSON.stringify(
+					browser.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "key_up",
 							"keycode": jsonMsg["control"]["keycode"]

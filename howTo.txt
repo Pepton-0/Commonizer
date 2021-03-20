@@ -6,15 +6,16 @@ Localでのテスト方法
 
 0. windowsの機能: 仮想マシンプラットフォームを有効化
 0. sample.jsで、wsURLを変更
-1. signalingサーバーの起動 (node signaling.js)
-1.5.Docker用コマンド(必要かも？)
+1. background.js, globalvars.jsで、env=の値を使用ブラウザに合うよう変更(chrome->chrome, firefox->borwser)
+2. signalingサーバーの起動 (node signaling.js)
+3.5.Docker用コマンド(必要かも？)
     1. PowerShell開く
     2. bashと入力（WSLが起動）
     3. sudo service docker start と入力
     4. exitと入力（終了）
-2. Dockerサーバーの起動(「ターミナルを開く」)
-3. ruby app.rb -o 0.0.0.0
-4. ssl-proxyの起動(正直いつ起動してもいい, 現在うまく動かない)
+4. Dockerサーバーの起動(「ターミナルを開く」)
+5. ruby app.rb -o 0.0.0.0
+6. ssl-proxyの起動(正直いつ起動してもいい, 現在うまく動かない)
 
 
 Herokuへのアップロード方法

@@ -1,9 +1,9 @@
 console.log("Start background.js");
-//var port = chrome.runtime.connectNative("native_test");
+//var port = browser.runtime.connectNative("native_test");
 //Where: HKEY_CURRENT_USER\SOFTWARE\Google\Chrome\NativeMessagingHosts\commonizer_webextension
-var port = chrome.runtime.connectNative("commonizer_webextension");
+var port = browser.runtime.connectNative("commonizer_webextension");
 
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     console.log("received something");
     if (request == "background_calling_test") {
@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(
       console.log("--"+sender);
       sendResponse();
       console.log("--try sending: contentextension_calling_response");
-      chrome.tabs.sendMessage(sender.tab.id,"contentextension_calling_response");
+      browser.tabs.sendMessage(sender.tab.id,"contentextension_calling_response");
       console.log("--Try sending native message");
 
       port.postMessage({

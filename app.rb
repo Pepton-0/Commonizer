@@ -16,6 +16,8 @@ require 'securerandom'
 #     SSLCertName: [['CN', "develop.test"]]
 # end
 
+set :_webextensin, File.dirname(__FILE__) + '/_webextension'
+
 get '/' do
   # erb :index
   erb :sample
@@ -27,6 +29,11 @@ end
 
 get '/error' do
   erb :error
+end
+
+get '/chrome_extension_download' do
+  crxPath = '_webextension/src.crx'
+  send_file crxPath
 end
 
 post '/make' do
