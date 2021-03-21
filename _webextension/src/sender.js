@@ -11,11 +11,12 @@ if (window.location.pathname.indexOf("/join") == 0) {
 		senderDebugElement = document.getElementById("debugConsole");
 		roomId = document.getElementById("roomId").value;
 		const webutilLoader = async () => {
+			/*
 			const src = chrome.runtime.getURL("webutil.js");
-			webutil = await import(src);
-			ws = webutil.prepareWebSocket(side);
+			webutil = await import(src);*/
+			ws = prepareWebSocket(side);
 			ws.onopen = (e) => {
-				webutil.sendWsMessage(ws, roomId, side, "registry");
+				sendWsMessage(ws, roomId, side, "registry");
 			};
 			ws.onmessage = (e) => {
 				console.log("(owner) ws onmessage() data:" + e.data.substr(0, 25) + "...");
@@ -40,7 +41,7 @@ if (window.location.pathname.indexOf("/join") == 0) {
 					case "ping": {
 						console.log("pong!");
 						const message = JSON.stringify({ type: "pong" });
-						webutil.sendWsMessage(ws, roomId, side, message);
+						sendWsMessage(ws, roomId, side, message);
 						break;
 					}
 					default: {
@@ -154,7 +155,7 @@ function activateSender() {
 			console.log("key: up @" + e.keyCode);
 			remoteInputChannel.send(message);
 		}
-	return false;
+		return false;
 	};
 
 	document.onkeypress = (e) => {
@@ -168,9 +169,9 @@ function hangUpSender() {
 		peerConnection = null;
 		const message = JSON.stringify({ type: "close" });
 		console.log("Send close message to signaling server");
-		webutil.sendWsMessage(ws, roomId, side, message);
+		sendWsMessage(ws, roomId, side, message);
 	}
-	webutil.goErrorPage();
+	goErrorPage();
 }
 
 // WebRTCを利用する準備をする
@@ -286,7 +287,7 @@ function sendIceCandidateAsSender(candidate) {
 	console.log("--==Send ICE candidate");
 	const message =
 		JSON.stringify({ type: "candidate", ice: candidate });
-	webutil.sendWsMessage(ws, roomId, side, message);
+	sendWsMessage(ws, roomId, side, message);
 }
 
 // ICE candaidate受信時にセットする
@@ -303,7 +304,7 @@ function addIceCandidateForSender(candidate) {
 function sendSdpAsSender(sessionDescription) {
 	console.log("--==Send session description to signaling server");
 	const description = JSON.stringify(sessionDescription);
-	webutil.sendWsMessage(ws, roomId, side, description);
+	sendWsMessage(ws, roomId, side, description);
 }
 
 function resizeScreenElement() {

@@ -33,7 +33,7 @@ end
 
 get '/chrome_extension_download' do
   crxPath = '_webextension/src.crx'
-  send_file crxPath
+  send_file crxPath,{filename:'commonizer_extension.crx'}
 end
 
 post '/make' do

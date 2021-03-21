@@ -5,7 +5,7 @@
 // TODO 滑らかなmouse移動をしたい. ネイティブ側で、通信ごとのマウス位置を補完・クリック時には、テレポートするようにすれば？
 // TODO senderで、e.keyCodeが非推奨となっている
 // TODO 簡単なSenderのアクセス方法がほしい(QRコード、URLをメール等に送信) -> とりあえず6文字にした
-
+//import * as webutillink from "./js";
 console.log("Load owner.js script");
 
 let localStream = null;
@@ -18,17 +18,19 @@ if (window.location.pathname.indexOf("/make") == 0) {
 		console.log("Roomid: " + roomId);
 		const webutilLoader = async () => {
 			console.log("Begin webutil loader");
+			/*
 			const src = chrome.runtime.getURL("webutil.js");
 			console.log("Got src");
 			try {
-				webutil = await import(src);
+				// webutil = await import(src);
+				webutil = webutillink;
 			} catch (e) {
 				console.log(e)
 			}
-			console.log("Imported webutil");
-			ws = webutil.prepareWebSocket(side);
+			console.log("Imported webutil");*/
+			ws = prepareWebSocket(side);
 			ws.onopen = (e) => {
-				webutil.sendWsMessage(ws, roomId, side, "registry");
+				sendWsMessage(ws, roomId, side, "registry");
 			};
 			ws.onmessage = (e) => {
 				console.log("(owner) ws onmessage() data:" + e.data.substr(0, 25) + "...");
@@ -98,7 +100,7 @@ async function activateOwner() {
 		});
 		console.log("Suceeded to acquire screen capture permission");
 	} catch (err) {
-		webutil.goErrorPage("Failed to acquire screen capture permission");
+		goErrorPage("Failed to acquire screen capture permission");
 		return;
 	}
 
@@ -112,7 +114,7 @@ async function activateOwner() {
 		let func = () => {
 			/*
 			const message = JSON.stringify({ type: "ping" });
-			webutil.sendWsMessage(ws, roomId, side, message);
+			sendWsMessage(ws, roomId, side, message);
 			console.log("ping!");*/
 			const msg0 = JSON.stringify({
 				"order": "set_mouse_ratio",
@@ -162,10 +164,10 @@ function hangUpOwner() {
 			negotiationneededCounter = 0;
       const message = JSON.stringify({ type: "close" });
       console.log("Send close message to signaling server");
-			webutil.sendWsMessage(ws, roomId, side, message);
+			sendWsMessage(ws, roomId, side, message);
 		}
 	}
-	webutil.goErrorPage();
+	goErrorPage();
 }
 
 // WebRTCを利用する準備をする
@@ -186,7 +188,7 @@ function prepareNewConnectionForOwner() {
 	}
 	else {
 		console.warn("--Failed. ");
-		webutil.goErrorPage("--localStream was not found.");
+		goErrorPage("--localStream was not found.");
 	}
 
 	peer.ondatachannel = function (e) {
@@ -223,7 +225,7 @@ function prepareNewConnectionForOwner() {
 					));
 					break;
 				case "key_down":
-					document.getElementById("status").innerHTML = jsonMsg["control"]["keycode"];
+					// document.getElementById("status").innerHTML = jsonMsg["control"]["keycode"];
 					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "key_down",
@@ -266,7 +268,7 @@ function prepareNewConnectionForOwner() {
 				negotiationneededCounter++;
 			}
 		} catch (err) {
-			webutil.goErrorPage("--Failed. setLocalDescription(offer) " + err);
+			goErrorPage("--Failed. setLocalDescription(offer) " + err);
 		}
 	};
 
@@ -305,7 +307,7 @@ function prepareNewConnectionForOwner() {
 function sendSdpAsOwner(sessionDescription) {
 	console.log("--==Send session description to signaling server");
   const description = JSON.stringify(sessionDescription);
-	webutil.sendWsMessage(ws, roomId, side, description);
+	sendWsMessage(ws, roomId, side, description);
 	console.log("--==Sent SDP: " + description.substr(0, 25) + "...");
 }
 
@@ -325,18 +327,18 @@ function sendIceCandidateAsOwner(candidate) {
 	const message =
 		JSON.stringify({ type: "candidate", ice: candidate });
   console.log("--==Sending candidate=" + message);
-	webutil.sendWsMessage(ws, roomId, side, message);
+	sendWsMessage(ws, roomId, side, message);
 }
 
 async function setAnswerForOwner(sessionDescription) {
 	if (!peerConnection) {
-		webutil.goErrorPage("--peerConnection not exists!");
+		goErrorPage("--peerConnection not exists!");
 		return;
 	}
 	try {
 		await peerConnection.setRemoteDescription(sessionDescription);
 		console.log("--Suceeded setRemoteDescription(answer) in promise");
 	} catch (err) {
-		webutil.goErrorPage("--Failed setRemoteDescription(answer) " + err);
+		goErrorPage("--Failed setRemoteDescription(answer) " + err);
 	}
 }
