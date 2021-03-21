@@ -223,6 +223,7 @@ function prepareNewConnectionForOwner() {
 					));
 					break;
 				case "key_down":
+					document.getElementById("status").innerHTML = jsonMsg["control"]["keycode"];
 					chrome.runtime.sendMessage(JSON.stringify(
 						{
 						"order": "key_down",

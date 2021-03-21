@@ -85,6 +85,7 @@ function activateSender() {
 			});
 			remoteInputChannel.send(message);
 		}
+		return false;
 	});
 
 	screenElement.addEventListener("mouseup", (e) => {
@@ -99,6 +100,7 @@ function activateSender() {
 			});
 			remoteInputChannel.send(message);
 		}
+		return false;
 	});
 
 	// こちらが動かしているときだけ、あちらのマウスの座標は変更される. あちらの人も自分で操作したい時があるだろうから.
@@ -138,6 +140,7 @@ function activateSender() {
 			console.log("key:down@" + e.keyCode);
 			remoteInputChannel.send(message);
 		}
+		return false;
 	};
 
 	document.onkeyup = (e) => {
@@ -151,7 +154,12 @@ function activateSender() {
 			console.log("key: up @" + e.keyCode);
 			remoteInputChannel.send(message);
 		}
+	return false;
 	};
+
+	document.onkeypress = (e) => {
+		return false;
+	}
 };
 
 function hangUpSender() {
@@ -301,8 +309,8 @@ function sendSdpAsSender(sessionDescription) {
 function resizeScreenElement() {
 	let newWidth = 10;
 	let newHeight = 10;
-	let minXByHeight = window.innerHeight * 0.85 * screenElementRatio;
-	let minYByWidth = window.innerWidth * 0.85 * (1 / screenElementRatio);
+	let minXByHeight = window.innerHeight * 0.8 * screenElementRatio;
+	let minYByWidth = window.innerWidth * 0.8 * (1 / screenElementRatio);
 
 	if (minYByWidth < window.innerHeight) {
 		newHeight = minYByWidth;
