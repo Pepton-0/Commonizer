@@ -1,7 +1,10 @@
 console.log("Start background.js");
-//var port = chrome.runtime.connectNative("native_test");
+/*console.log("Test message: ping!");
+var port = chrome.runtime.connectNative("native_test");
+port.postMessage("ping");*/
 //Where: HKEY_CURRENT_USER\SOFTWARE\Google\Chrome\NativeMessagingHosts\commonizer_webextension
 var port = chrome.runtime.connectNative("commonizer_webextension");
+port.postMessage({ "order": "test" });
 
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
@@ -73,9 +76,5 @@ chrome.runtime.onMessage.addListener(
 );
 
 port.onMessage.addListener((response) => {
-  try {
-    console.log("--Received JSON: " + JSON.stringify(response));
-  } catch (error) {
     console.log("--Received: " + response);
-  }
 });

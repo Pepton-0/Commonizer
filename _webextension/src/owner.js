@@ -20,7 +20,11 @@ if (window.location.pathname.indexOf("/make") == 0) {
 			console.log("Begin webutil loader");
 			const src = chrome.runtime.getURL("webutil.js");
 			console.log("Got src");
-			webutil = await import(src);
+			try {
+				webutil = await import(src);
+			} catch (e) {
+				console.log(e)
+			}
 			console.log("Imported webutil");
 			ws = webutil.prepareWebSocket(side);
 			ws.onopen = (e) => {

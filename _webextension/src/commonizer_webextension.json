@@ -3,7 +3,6 @@
     "description": "Native Test",
     "path": "C:\/Users\/kent2\/Desktop\/MyProgram\/Docker\/commonizer\/_webextension\/netcoreapp\/CommonizerRuler.exe",
     "type": "stdio",
-    "allowed_extensions": [ "Commonizer" ],
     "allowed_origins": [
         "chrome-extension:\/\/dpopmhdfcfidmdngaagfegmkmcbjjkff\/"
     ]

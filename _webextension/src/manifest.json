@@ -21,5 +21,11 @@
   ],
   "web_accessible_resources":[
     "webutil.js"
-  ]
+  ],
+  "applications": {
+    "gecko": {
+      "id": "commonizer@kentcraft",
+      "strict_min_version": "50.0"
+    }
+  }
 }

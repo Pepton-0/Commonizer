@@ -1,4 +1,6 @@
 // Prepare connection gate to a signaling server;
+console.log("Something happened in webutil");
+
 export function prepareWebSocket(side) {
   console.log("prepare a new ws connection");
   // シグナリングサーバへ接続する
