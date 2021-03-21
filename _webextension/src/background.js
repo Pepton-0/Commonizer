@@ -4,7 +4,6 @@ var port = chrome.runtime.connectNative("native_test");
 port.postMessage("ping");*/
 //Where: HKEY_CURRENT_USER\SOFTWARE\Google\Chrome\NativeMessagingHosts\commonizer_webextension
 var port = chrome.runtime.connectNative("commonizer_webextension");
-port.postMessage({ "order": "test" });
 
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
